@@ -1,17 +1,14 @@
 package main
 
 import (
+	"os"
+
 	"github.com/danryan/hal"
 	// _ "github.com/danryan/hal/adapter/irc"
 	_ "github.com/danryan/hal/adapter/shell"
 	_ "github.com/danryan/hal/store/memory"
-	"os"
 )
 
-// HAL is just another Go package, which means you are free to organize things
-// however you deem best.
-
-// You can define your handlers in the same file...
 var pingHandler = hal.Hear(`.ping`, func(res *hal.Response) error {
 	return res.Send("PONG")
 })
