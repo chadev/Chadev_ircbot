@@ -1,10 +1,14 @@
+// Copyright 2014 Chadev. All rights reserved.
+// Use of this source code is governed by a BSD-style
+// license that can be found in the LICENSE file.
+
 package main
 
 import (
 	"os"
 
 	"github.com/danryan/hal"
-	// _ "github.com/danryan/hal/adapter/irc"
+	_ "github.com/danryan/hal/adapter/irc"
 	_ "github.com/danryan/hal/adapter/shell"
 	_ "github.com/danryan/hal/store/memory"
 )
@@ -21,6 +25,19 @@ var synHandler = hal.Hear(`.SYN`, func(res *hal.Response) error {
 	return res.Send("ACK")
 })
 
+var helpHandler = hal.Hear(`.help`, func(res *hal.Response) error {
+	helpMsg := `HAL Chadev IRC Edition
+Supported commands:
+.ping      - Causes HAL to reply with a PONG
+.foo       - Causes HAL to reply with a BAR
+.SYN       - Causes HAL to reply with an ACK
+.tableflip - ...
+.events    - Get next 7 events from the Chadev calendar
+.help      - Displays this message`
+
+	return res.Send(helpMsg)
+})
+
 func run() int {
 	robot, err := hal.NewRobot()
 	if err != nil {
@@ -32,6 +49,9 @@ func run() int {
 		pingHandler,
 		fooHandler,
 		tableFlipHandler,
+		eventHandler,
+		synHandler,
+		helpHandler,
 	)
 
 	if err := robot.Run(); err != nil {
