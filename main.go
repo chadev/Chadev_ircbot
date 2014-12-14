@@ -4,7 +4,7 @@ import (
 	"os"
 
 	"github.com/danryan/hal"
-	// _ "github.com/danryan/hal/adapter/irc"
+	_ "github.com/danryan/hal/adapter/irc"
 	_ "github.com/danryan/hal/adapter/shell"
 	_ "github.com/danryan/hal/store/memory"
 )
