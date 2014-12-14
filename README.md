@@ -9,6 +9,8 @@ The bot is written in Go, and reqiures [Go 1 and higher](http://golang.org/doc/i
 
     go get github.com/chadev/Chadev_ircbot
 
+Currently this is unbuildable with Go 1.4, due to the way C and CGO are handled.  See the [Go 1.4 release notes](http://golang.org/doc/go1.4#swig) and [Issue #39 on HAL's issue tracker](https://github.com/danryan/hal/issues/39) for more details.
+
 ## Configuring
 
 The bot is configured purly by system evironmental variables.  To work with the Google Calendar API, this also requires Oauth2 credentuals from Google.
