@@ -27,6 +27,7 @@ var (
 	accessToken AccessToken
 )
 
+// AccessToken contains the current oauth2 token and its expiry time.
 type AccessToken struct {
 	Token string
 	Valid time.Time
@@ -48,6 +49,7 @@ func (a *AccessToken) expiredToken() bool {
 	return false
 }
 
+// Event is the top-level of the JSON return from the calendar API.
 type Event struct {
 	// Kind is the type of collection ("calendar#events")
 	Kind string `json:"kind"`
@@ -75,6 +77,7 @@ type Event struct {
 	NextSyncToken string `json:"nextSyncToken"`
 }
 
+// EventItem contains items with-in the "items" list of the JSON.
 type EventItem struct {
 	// Kind is the type of collection ("calendar#event")
 	Kind string `json:"kind"`
@@ -112,6 +115,7 @@ type EventItem struct {
 	Reminders EventReminder `json:"reminders"`
 }
 
+// EventCreator contains the fields for the creator object.
 type EventCreator struct {
 	// Email address for the event creator
 	Email string `json:"email"`
@@ -119,6 +123,7 @@ type EventCreator struct {
 	DisplayName string `json:"displayName"`
 }
 
+// EventOrganizer contains the fields for the organizer object.
 type EventOrganizer struct {
 	// Email address for the event organizer
 	Email string `json:"email"`
@@ -128,6 +133,7 @@ type EventOrganizer struct {
 	Self bool `json:self"`
 }
 
+// EventDateTime contains the fields for the "start" and "end" objects.
 type EventDateTime struct {
 	// DateTime is the start/end datetime in  RFC 3339 format
 	DateTime string `json:"dateTime"`
@@ -135,6 +141,7 @@ type EventDateTime struct {
 	TimeZone string `json:"timeZone,omitempty"`
 }
 
+//EventReminder contains the fields for the reminders object.
 type EventReminder struct {
 	// UseDefault denotes if Google Calendar default reminders are used
 	UseDefault bool `json:"useDefault"`
