@@ -48,6 +48,98 @@ func (a *AccessToken) expiredToken() bool {
 	return false
 }
 
+type Event struct {
+	// Kind is the type of collection ("calendar#events")
+	Kind string `json:"kind"`
+	// Etag is the etag of the collection
+	Etag string `json:"etag"`
+	// Summary is the name of the calendar
+	Summary string `json:"summary"`
+	// Description is the description of the calendar
+	Description string `json:"descritpion"`
+	// Updated is the last modified time for the calendar
+	Updated string `json:"updated"`
+	// TimeZone is the timezone for the calendar
+	TimeZone string `json:"timeZone"`
+	// AccessRole is the role of the current user.
+	// possible values include: "none", "freeBuzyReader", "reader", "writer", "owner"
+	AccessRole string `json:"accessRole"`
+	// NextPageToken is used to access the next page of this result. Omitted if no
+	// further results are available, in which case nextSyncToken is provided.
+	NextPageToken string `json:"nextPageToken,omitempty"`
+	// Items is the list of events on the calendar.
+	Items []EventItem `json:"items"`
+	// NextSyncToken is used at a later point in time to retrieve only the entries
+	// that have changed since this result was returned. Omitted if further results
+	// are available, in which case nextPageToken is provided.
+	NextSyncToken string `json:"nextSyncToken"`
+}
+
+type EventItem struct {
+	// Kind is the type of collection ("calendar#event")
+	Kind string `json:"kind"`
+	// Etag string `json:"etag"`
+	Etag string `json:"etag"`
+	// ID is the ID of the event
+	ID string `json:"id"`
+	// Status is the status of the event
+	Status string `json:"status"`
+	// HTMLLink is the link to the event on the calendar
+	HTMLLink string `json:"htmlLink"`
+	// Created is the datetime stamp that the event was created
+	Created string `json:"created"`
+	// Updated is the datetame stamp that the event was last modified
+	Updated string `json:"updated"`
+	// Summary is the name of the event
+	Summary string `json:"summary"`
+	// Description is the body of the event
+	Description string `json:"description"`
+	// Location is the address for the event
+	Location string `json:"location"`
+	// Creator is the user that created the event
+	Creator EventCreator `json:"creator"`
+	// Organizer is the organizer information
+	organizer EventOrganizer `json:"organizer"`
+	// Start is the start date and time
+	Start EventDateTime `json:"start"`
+	// End is the end date and time
+	End EventDateTime `json:"end"`
+	// ICalUID is the iCal ID for the event
+	ICalUID string `json:"uCalUID"`
+	// Sequence denotes if this is a repeating event
+	Sequence int `json:"sequence"`
+	// Reminders are the event reminders
+	Reminders EventReminder `json:"reminders"`
+}
+
+type EventCreator struct {
+	// Email address for the event creator
+	Email string `json:"email"`
+	// DisplayName is the real name of the creator
+	DisplayName string `json:"displayName"`
+}
+
+type EventOrganizer struct {
+	// Email address for the event organizer
+	Email string `json:"email"`
+	// DisplayName is the name of the event organizer
+	DisplayName string `json:"displayName"`
+	// Self denotes if the organizer is the current user
+	Self bool `json:self"`
+}
+
+type EventDateTime struct {
+	// DateTime is the start/end datetime in  RFC 3339 format
+	DateTime string `json:"dateTime"`
+	// TimeZone is the Timezone for the event
+	TimeZone string `json:"timeZone,omitempty"`
+}
+
+type EventReminder struct {
+	// UseDefault denotes if Google Calendar default reminders are used
+	UseDefault bool `json:"useDefault"`
+}
+
 func getCalendarEvents() (string, error) {
 	var err error
 
@@ -59,8 +151,10 @@ func getCalendarEvents() (string, error) {
 		}
 	}
 
-	URL := fmt.Sprintf("%s/4qc3thgj9ocunpfist563utr6g@group.calendar.google.com/events?access_token=%s&maxResults=7",
-		baseURL, url.QueryEscape(accessToken.Token))
+	URL := fmt.Sprintf("%s/4qc3thgj9ocunpfist563utr6g@group.calendar.google.com/events?access_token=%s&timeMin=%s&maxResults=7",
+		baseURL, url.QueryEscape(accessToken.Token),
+		url.QueryEscape(time.Now().Format("2006-01-02")+"T00:00:00.000Z"))
+	fmt.Println(URL)
 	resp, err := http.Get(URL)
 	if err != nil {
 		return "", err
@@ -72,7 +166,16 @@ func getCalendarEvents() (string, error) {
 		return "", err
 	}
 
-	return string(body), nil
+	var Events Event
+
+	err = json.Unmarshal(body, &Events)
+	if err != nil {
+		return "", err
+	}
+
+	eventList := getEventList(Events)
+
+	return eventList, nil
 }
 
 func getOauth2Token() (AccessToken, error) {
@@ -111,4 +214,29 @@ func getOauth2Token() (AccessToken, error) {
 	accessToken.getExpireTime(r.Expires)
 
 	return accessToken, nil
+}
+
+func getEventList(events Event) string {
+	var output string
+
+	output = "Next 7 events: "
+	for key, event := range events.Items {
+		if key == 0 {
+			output += event.Summary
+		} else {
+			output += ", " + event.Summary
+		}
+		output += " (" + formatDate(event.Start.DateTime) + ")"
+	}
+
+	return output
+}
+
+func formatDate(s string) string {
+	date, err := time.Parse(time.RFC3339, s)
+	if err != nil {
+		return ""
+	}
+
+	return date.Format("01/02")
 }
