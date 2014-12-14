@@ -28,7 +28,6 @@ var synHandler = hal.Hear(`.SYN`, func(res *hal.Response) error {
 var helpHandler = hal.Hear(`.help`, func(res *hal.Response) error {
 	helpMsg := `HAL Chadev IRC Edition
 Supported commands:
-.ping      - Causes HAL to reply with a PONG
 .foo       - Causes HAL to reply with a BAR
 .SYN       - Causes HAL to reply with an ACK
 .tableflip - ...
@@ -46,7 +45,6 @@ func run() int {
 	}
 
 	robot.Handle(
-		pingHandler,
 		fooHandler,
 		tableFlipHandler,
 		eventHandler,
