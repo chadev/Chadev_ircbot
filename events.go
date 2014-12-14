@@ -151,10 +151,9 @@ func getCalendarEvents() (string, error) {
 		}
 	}
 
-	URL := fmt.Sprintf("%s/4qc3thgj9ocunpfist563utr6g@group.calendar.google.com/events?access_token=%s&timeMin=%s&maxResults=7",
+	URL := fmt.Sprintf("%s/4qc3thgj9ocunpfist563utr6g@group.calendar.google.com/events?access_token=%s&singleEvents=true&orderBy=startTime&timeMin=%s&maxResults=7",
 		baseURL, url.QueryEscape(accessToken.Token),
-		url.QueryEscape(time.Now().Format("2006-01-02")+"T00:00:00.000Z"))
-	fmt.Println(URL)
+		url.QueryEscape(time.Now().Format("2006-01-02T15:04:05Z")))
 	resp, err := http.Get(URL)
 	if err != nil {
 		return "", err
