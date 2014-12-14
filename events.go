@@ -59,7 +59,7 @@ func getCalendarEvents() (string, error) {
 		}
 	}
 
-	URL := fmt.Sprintf("%s/4qc3thgj9ocunpfist563utr6g@group.calendar.google.com/events?access_token=%s",
+	URL := fmt.Sprintf("%s/4qc3thgj9ocunpfist563utr6g@group.calendar.google.com/events?access_token=%s&maxResults=7",
 		baseURL, url.QueryEscape(accessToken.Token))
 	resp, err := http.Get(URL)
 	if err != nil {
