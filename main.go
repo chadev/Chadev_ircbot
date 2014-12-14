@@ -33,6 +33,7 @@ func run() int {
 		fooHandler,
 		tableFlipHandler,
 		eventHandler,
+		synHandler,
 	)
 
 	if err := robot.Run(); err != nil {
