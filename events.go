@@ -8,7 +8,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
-	"log"
 	"net/http"
 	"net/url"
 	"os"
@@ -21,7 +20,7 @@ import (
 var eventHandler = hal.Hear(`.events`, func(res *hal.Response) error {
 	events, err := getCalendarEvents()
 	if err != nil {
-		log.Printf("failed to call Calendar API: %v\n", err)
+		hal.Logger.Error("failed to call Calendar API: %v", err)
 		return res.Send("Could not fetch data from Google Calendar API, please try again later")
 	}
 
