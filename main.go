@@ -13,26 +13,29 @@ import (
 	_ "github.com/danryan/hal/store/memory"
 )
 
-var pingHandler = hal.Hear(`.ping`, func(res *hal.Response) error {
+var listenName = "Ash"
+
+var pingHandler = hal.Hear(listenName+` ping`, func(res *hal.Response) error {
 	return res.Send("PONG")
 })
 
-var fooHandler = hal.Hear(`.foo`, func(res *hal.Response) error {
+var fooHandler = hal.Hear(listenName+` foo`, func(res *hal.Response) error {
 	return res.Send("BAR")
 })
 
-var synHandler = hal.Hear(`.SYN`, func(res *hal.Response) error {
+var synHandler = hal.Hear(listenName+` SYN`, func(res *hal.Response) error {
 	return res.Send("ACK")
 })
 
-var helpHandler = hal.Hear(`.help`, func(res *hal.Response) error {
+var helpHandler = hal.Hear(listenName+` help`, func(res *hal.Response) error {
 	helpMsg := `HAL Chadev IRC Edition
 Supported commands:
-.foo       - Causes HAL to reply with a BAR
-.SYN       - Causes HAL to reply with an ACK
-.tableflip - ...
-.events    - Get next 7 events from the Chadev calendar
-.help      - Displays this message`
+events    - Get next 7 events from the Chadev calendar
+foo       - Causes HAL to reply with a BAR
+help      - Displays this message
+ping      - Causes HAL to reply with a PONG
+SYN       - Causes HAL to reply with an ACK
+tableflip - ...`
 
 	return res.Send(helpMsg)
 })
