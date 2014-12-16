@@ -48,12 +48,12 @@ All commands use the "noun verb" syntax, the noun is the name of the bot (curren
 
 Command | Details
 --------|---------
-.events | Get next seven events from the Chadev calendar
-.foo    | Causes HAL to reply with a BAR
-.help   | Displays the help message
-.ping   | Causes HAL to reply with PONG
-.SYN    | causes HAL to reply with ACK
-.tableflip | Flips a table
+events | Get next seven events from the Chadev calendar
+foo    | Causes HAL to reply with a BAR
+help   | Displays the help message
+ping   | Causes HAL to reply with PONG
+SYN    | causes HAL to reply with ACK
+tableflip | Flips a table
 
 ## License
 
