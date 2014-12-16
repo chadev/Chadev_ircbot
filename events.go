@@ -48,6 +48,8 @@ func (a *AccessToken) getExpireTime(o int) {
 func (a *AccessToken) expiredToken() bool {
 	n := time.Now()
 	if a.Valid.After(n) {
+		hal.Logger.Info("current oauth token is expired")
+		a.Token = ""
 		return true
 	}
 
