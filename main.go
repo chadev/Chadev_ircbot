@@ -53,6 +53,7 @@ func run() int {
 		eventHandler,
 		synHandler,
 		helpHandler,
+		pingHandler,
 	)
 
 	if err := robot.Run(); err != nil {
