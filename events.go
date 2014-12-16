@@ -17,10 +17,11 @@ import (
 	"github.com/danryan/hal"
 )
 
-var eventHandler = hal.Hear(`.events`, func(res *hal.Response) error {
+var eventHandler = hal.Hear(listenName+` events`, func(res *hal.Response) error {
 	events, err := getCalendarEvents()
 	if err != nil {
-		return res.Send(err.Error())
+		hal.Logger.Error("failed to call Calendar API: %v", err)
+		return res.Send("Could not fetch data from Google Calendar API, please try again later")
 	}
 
 	return res.Send(events)
@@ -248,5 +249,5 @@ func formatDate(s string) string {
 		return ""
 	}
 
-	return date.Format("01/02")
+	return date.Format("01/02 3:04 pm")
 }

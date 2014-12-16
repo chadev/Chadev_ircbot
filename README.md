@@ -29,7 +29,7 @@ CHADEV\_TOKEN | Google Oauth2 refresh token (string)
 CHADEV\_ID | Google Oauth2 Client ID (string)
 CHADEV\_SECRET | Google Oauth2 Client Secret (string)
 
-## Usage
+## Running the bot
 
 Running the bot is simple
 
@@ -39,6 +39,19 @@ This will start up the bot using what ever the environment variables are set to.
 this can be done at launch like so:
 
     $ export HAL_ADAPTER="shell"; chadev_ircbot
+
+## Usage
+
+Currently the help output is broken, see [Issue #1](https://github.com/chadev/Chadev_ircbot/issues/1) for more details.  Until that is worked out here is a list of supported commands.
+
+Command | Details
+--------|---------
+.events | Get next seven events from the Chadev calendar
+.foo    | Causes HAL to reply with a BAR
+.help   | Displays the help message
+.ping   | Causes HAL to reply with PONG (currently disabled due to FreeNode ping noise)
+.SYN    | causes HAL to reply with ACK
+.tableflip | Flips a table
 
 ## License
 
