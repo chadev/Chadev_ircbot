@@ -44,12 +44,14 @@ this can be done at launch like so:
 
 Currently the help output is broken, see [Issue #1](https://github.com/chadev/Chadev_ircbot/issues/1) for more details.  Until that is worked out here is a list of supported commands.
 
+All commands use the "noun verb" syntax, the noun is the name of the bot (currently "Ash").  An example of this would be ```Ash ping``` to send a ping to the bot.
+
 Command | Details
 --------|---------
 .events | Get next seven events from the Chadev calendar
 .foo    | Causes HAL to reply with a BAR
 .help   | Displays the help message
-.ping   | Causes HAL to reply with PONG (currently disabled due to FreeNode ping noise)
+.ping   | Causes HAL to reply with PONG
 .SYN    | causes HAL to reply with ACK
 .tableflip | Flips a table
 
