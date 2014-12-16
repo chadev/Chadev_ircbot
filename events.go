@@ -249,5 +249,5 @@ func formatDate(s string) string {
 		return ""
 	}
 
-	return date.Format("01/02")
+	return date.Format("01/02 3:04 pm")
 }
