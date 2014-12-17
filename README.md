@@ -51,7 +51,9 @@ Command | Details
 events | Get next seven events from the Chadev calendar
 foo    | Causes HAL to reply with a BAR
 help   | Displays the help message
+issue  | Returns the URL for the issue queue for the given CHadev project
 ping   | Causes HAL to reply with PONG
+source | Returns the URL for the given Chadev project
 SYN    | causes HAL to reply with ACK
 tableflip | Flips a table
 
