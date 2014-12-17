@@ -23,19 +23,48 @@ var sourceHandler = hal.Hear(listenName+` source (.+)`, func(res *hal.Response) 
 	return res.Send(URL)
 })
 
+var issueHandler = hal.Hear(listenName+` issue (.+)`, func(res *hal.Response) error {
+	URL, err := getIssueURL(res.Match[1])
+	if err != nil {
+		hal.Logger.Error(fmt.Sprintf("unable to get issue URL: %v\n", err))
+		return res.Send(fmt.Sprintf("Fetching issue queue URL for %s failed, possibly misspelled?", res.Match[1]))
+	}
+
+	return res.Send(URL)
+})
+
 func getGitHubURL(s string) (string, error) {
 	// build the GitHub URL
 	URL := fmt.Sprintf("https://github.com/chadev/%s", url.QueryEscape(s))
 
-	// check if the URL is valid
-	resp, err := http.Get(URL)
-	if err != nil {
-		return "", err
-	}
-
-	if resp.StatusCode != 200 {
-		return "", errors.New("no repo with URL: " + URL)
+	if !validateURL(URL) {
+		return "", errors.New("unable to get GitHub URL: no repo with URL: " + URL)
 	}
 
 	return URL, nil
+}
+
+func getIssueURL(s string) (string, error) {
+	// build the URL
+	URL := fmt.Sprintf("https://github.com/chadev/%s/issues", url.QueryEscape(s))
+
+	if !validateURL(URL) {
+		return "", errors.New("unable to get GitHub URL: no repo with URL: " + URL)
+	}
+
+	return URL, nil
+}
+
+func validateURL(u string) bool {
+	// check if the URL is valid
+	resp, err := http.Get(u)
+	if err != nil {
+		return false
+	}
+
+	if resp.StatusCode != 200 {
+		return false
+	}
+
+	return true
 }

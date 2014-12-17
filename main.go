@@ -33,6 +33,7 @@ Supported commands:
 events    - Get next 7 events from the Chadev calendar
 foo       - Causes HAL to reply with a BAR
 help      - Displays this message
+issues    - Give the URL to the issue queue for the named GitHub repo
 ping      - Causes HAL to reply with a PONG
 source    - Give the URL to the named GitHub repo
 SYN       - Causes HAL to reply with an ACK
@@ -56,6 +57,7 @@ func run() int {
 		helpHandler,
 		pingHandler,
 		sourceHandler,
+		issueHandler,
 	)
 
 	if err := robot.Run(); err != nil {
