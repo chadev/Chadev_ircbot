@@ -34,6 +34,7 @@ events    - Get next 7 events from the Chadev calendar
 foo       - Causes HAL to reply with a BAR
 help      - Displays this message
 ping      - Causes HAL to reply with a PONG
+source    - Give the URL to the named GitHub repo
 SYN       - Causes HAL to reply with an ACK
 tableflip - ...`
 
@@ -54,6 +55,7 @@ func run() int {
 		synHandler,
 		helpHandler,
 		pingHandler,
+		sourceHandler,
 	)
 
 	if err := robot.Run(); err != nil {
