@@ -5,15 +5,15 @@
 package main
 
 import (
-  "strconv"
+	"strconv"
 	"math/rand"
 
 	"github.com/danryan/hal"
 )
 
 var cageMeHandler = hal.Hear(listenName+` cageme`, func(res *hal.Response) error {
-  root := "http://cageme.herokuapp.com"
+	root := "http://cageme.herokuapp.com"
 	num := strconv.Itoa(int(rand.Float64()*79+1))
 
-  return res.Send(root + "/specific/" + num + ".jpeg")
+	return res.Send(root + "/specific/" + num + ".jpeg")
 })

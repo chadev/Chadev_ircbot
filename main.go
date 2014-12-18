@@ -60,7 +60,7 @@ func run() int {
 		pingHandler,
 		sourceHandler,
 		issueHandler,
-    cageMeHandler,
+		cageMeHandler,
 	)
 
 	if err := robot.Run(); err != nil {
