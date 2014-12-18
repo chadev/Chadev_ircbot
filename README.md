@@ -69,6 +69,7 @@ ping   | Causes HAL to reply with PONG
 source | Returns the URL for the given Chadev project
 SYN    | causes HAL to reply with ACK
 tableflip | Flips a table
+cageme | Sends Nic Cage to infiltrate your brain
 
 ## License
 
