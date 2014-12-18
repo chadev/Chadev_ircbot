@@ -6,20 +6,22 @@ package main
 
 import (
 	"math/rand"
+	"time"
 
 	"github.com/danryan/hal"
 )
 
+var tableFlipped bool
+
 var tableFlipHandler = hal.Hear(listenName+` tableflip`, func(res *hal.Response) error {
-	num := rand.Int()
-	switch {
-	case num%15 == 0:
-		return res.Send(`the table flipped you! ノ┬─┬ノ ︵ ( \o°o)\`)
-	case num%3 == 0:
-		return res.Send("(ノಠ益ಠ)ノ彡┻━┻")
-	case num%5 == 0:
-		return res.Send("you set the table down ┬─┬ノ( º _ ºノ)")
-	default:
-		return res.Send(`(╯°□°）╯︵ ┻━┻`)
+	rand.Seed(time.Now().UTC().UnixNano())
+
+	e := []string{
+		"(ノಠ益ಠ)ノ彡┻━┻",
+		`(╯°□°）╯︵ ┻━┻`,
+		`the table flipped you! ノ┬─┬ノ ︵ ( \o°o)\`,
+		"┻━┻ ︵ヽ(`Д´)ﾉ︵ ┻━┻",
 	}
+
+	return res.Send(e[rand.Intn(len(e))])
 })
