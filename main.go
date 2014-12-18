@@ -11,6 +11,7 @@ import (
 	_ "github.com/danryan/hal/adapter/irc"
 	_ "github.com/danryan/hal/adapter/shell"
 	_ "github.com/danryan/hal/store/memory"
+	_ "github.com/danryan/hal/store/redis"
 )
 
 var listenName = "Ash"
