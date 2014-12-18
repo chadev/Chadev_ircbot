@@ -6,6 +6,7 @@ package main
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
 	"io/ioutil"
 	"net/http"
@@ -48,6 +49,8 @@ func (a *AccessToken) getExpireTime(o int) {
 func (a *AccessToken) expiredToken() bool {
 	n := time.Now()
 	if a.Valid.After(n) {
+		hal.Logger.Info("current oauth token is expired")
+		a.Token = ""
 		return true
 	}
 
@@ -198,6 +201,18 @@ func getOauth2Token() (AccessToken, error) {
 	clientID := os.Getenv("CHADEV_ID")
 	clientSecret := os.Getenv("CHADEV_SECRET")
 	refreshToken := os.Getenv("CHADEV_TOKEN")
+
+	if clientID == "" {
+		return accessToken, errors.New("client ID is undefined")
+	}
+
+	if clientSecret == "" {
+		return accessToken, errors.New("client secret is undefined")
+	}
+
+	if refreshToken == "" {
+		return accessToken, errors.New("oauth refresh token is undefined")
+	}
 
 	var r Responce
 

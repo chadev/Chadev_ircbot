@@ -4,8 +4,22 @@
 
 package main
 
-import "github.com/danryan/hal"
+import (
+	"math/rand"
+
+	"github.com/danryan/hal"
+)
 
 var tableFlipHandler = hal.Hear(listenName+` tableflip`, func(res *hal.Response) error {
-	return res.Send(`(╯°□°）╯︵ ┻━┻`)
+	num := rand.Int()
+	switch {
+	case num%15 == 0:
+		return res.Send(`the table flipped you! ノ┬─┬ノ ︵ ( \o°o)\`)
+	case num%3 == 0:
+		return res.Send("(ノಠ益ಠ)ノ彡┻━┻")
+	case num%5 == 0:
+		return res.Send("you set the table down ┬─┬ノ( º _ ºノ)")
+	default:
+		return res.Send(`(╯°□°）╯︵ ┻━┻`)
+	}
 })
