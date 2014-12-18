@@ -38,7 +38,8 @@ issues    - Give the URL to the issue queue for the named GitHub repo
 ping      - Causes HAL to reply with a PONG
 source    - Give the URL to the named GitHub repo
 SYN       - Causes HAL to reply with an ACK
-tableflip - ...`
+tableflip - ...
+cageme    - Sends Nic Cage to infiltrate your brain`
 
 	return res.Send(helpMsg)
 })
@@ -59,6 +60,7 @@ func run() int {
 		pingHandler,
 		sourceHandler,
 		issueHandler,
+		cageMeHandler,
 	)
 
 	if err := robot.Run(); err != nil {
