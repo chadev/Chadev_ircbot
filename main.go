@@ -14,21 +14,26 @@ import (
 	_ "github.com/danryan/hal/store/redis"
 )
 
+// handler is an interface for objects to implement in order to respond to messages.
+type handler interface {
+	Handle(res *hal.Response) error
+}
+
 var listenName = "Ash"
 
-var pingHandler = hal.Hear(listenName+` ping`, func(res *hal.Response) error {
+var pingHandler = event(`ping`, func(res *hal.Response) error {
 	return res.Send("PONG")
 })
 
-var fooHandler = hal.Hear(listenName+` foo`, func(res *hal.Response) error {
+var fooHandler = event(`foo`, func(res *hal.Response) error {
 	return res.Send("BAR")
 })
 
-var synHandler = hal.Hear(listenName+` SYN`, func(res *hal.Response) error {
+var synHandler = event(`SYN`, func(res *hal.Response) error {
 	return res.Send("ACK")
 })
 
-var helpHandler = hal.Hear(listenName+` help`, func(res *hal.Response) error {
+var helpHandler = event(`help`, func(res *hal.Response) error {
 	helpMsg := `HAL Chadev IRC Edition
 Supported commands:
 events    - Get next 7 events from the Chadev calendar
@@ -43,6 +48,10 @@ cageme    - Sends Nic Cage to infiltrate your brain`
 
 	return res.Send(helpMsg)
 })
+
+func main() {
+	os.Exit(run())
+}
 
 func run() int {
 	robot, err := hal.NewRobot()
@@ -70,6 +79,6 @@ func run() int {
 	return 0
 }
 
-func main() {
-	os.Exit(run())
+func event(pattern string, fn func(res *hal.Response) error) handler {
+	return hal.Hear(listenName+" "+pattern, fn)
 }
