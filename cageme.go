@@ -11,7 +11,7 @@ import (
 	"github.com/danryan/hal"
 )
 
-var cageMeHandler = hal.Hear(listenName+` cageme`, func(res *hal.Response) error {
+var cageMeHandler = event(`cageme`, func(res *hal.Response) error {
 	root := "http://cageme.herokuapp.com"
 	num := strconv.Itoa(int(rand.Float64()*79 + 1))
 

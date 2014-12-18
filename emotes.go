@@ -13,7 +13,7 @@ import (
 
 var tableFlipped bool
 
-var tableFlipHandler = hal.Hear(listenName+` tableflip`, func(res *hal.Response) error {
+var tableFlipHandler = event(`tableflip`, func(res *hal.Response) error {
 	rand.Seed(time.Now().UTC().UnixNano())
 
 	e := []string{

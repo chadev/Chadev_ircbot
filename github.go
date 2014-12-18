@@ -13,7 +13,7 @@ import (
 	"github.com/danryan/hal"
 )
 
-var sourceHandler = hal.Hear(listenName+` source (.+)`, func(res *hal.Response) error {
+var sourceHandler = event(`source (.+)`, func(res *hal.Response) error {
 	URL, err := getGitHubURL(res.Match[1])
 	if err != nil {
 		hal.Logger.Error(fmt.Sprintf("unable to get GitHub URL: %v\n", err))
@@ -23,7 +23,7 @@ var sourceHandler = hal.Hear(listenName+` source (.+)`, func(res *hal.Response) 
 	return res.Send(URL)
 })
 
-var issueHandler = hal.Hear(listenName+` issue (.+)`, func(res *hal.Response) error {
+var issueHandler = event(`issue (.+)`, func(res *hal.Response) error {
 	URL, err := getIssueURL(res.Match[1])
 	if err != nil {
 		hal.Logger.Error(fmt.Sprintf("unable to get issue URL: %v\n", err))
