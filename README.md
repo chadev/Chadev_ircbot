@@ -70,6 +70,8 @@ source | Returns the URL for the given Chadev project
 SYN    | causes HAL to reply with ACK
 tableflip | Flips a table
 cageme | Sends Nic Cage to infiltrate your brain
+who is    | Find out who a user is
+(name) is | Tell HAL who the user is
 
 ## License
 
