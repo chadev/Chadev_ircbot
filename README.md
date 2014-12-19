@@ -24,8 +24,7 @@ You will also need to supply the proper environment variables (found below)
 
 ## Configuring
 
-The bot is configured purly by system evironmental variables.  To work with the Google Calendar API, this also requires Oauth2 credentuals from Google.
-To set those up follow the directions [found here](https://developers.google.com/accounts/docs/OAuth2ForDevices).
+The bot is configured purely by system evironmental variables.  To work with the Google Calendar API, this also requires Oauth2 credentuals from Google. To set those up follow the directions [found here](https://developers.google.com/accounts/docs/OAuth2ForDevices).
 
 ### Required environtment variables
 
@@ -48,30 +47,29 @@ Running the bot is simple
 
     $ chadev_ircbot
 
-This will start up the bot using what ever the environment variables are set to.  When testing switching the adapter HAL will use to shell is helpful,
-this can be done at launch like so:
+This will start up the bot using whatever the environment variables are set to.  When testing, setting the adapter HAL uses to `"shell"` is helpful. This can be done at launch like so:
 
     $ export HAL_ADAPTER="shell"; chadev_ircbot
 
 ## Usage
 
-Currently the help output is broken, see [Issue #1](https://github.com/chadev/Chadev_ircbot/issues/1) for more details.  Until that is worked out here is a list of supported commands.
+Currently the help output is broken, see [Issue #1](https://github.com/chadev/Chadev_ircbot/issues/1) for more details.  Until that is worked out, here is a list of supported commands.
 
 All commands use the "noun verb" syntax, the noun is the name of the bot (currently "Ash").  An example of this would be ```Ash ping``` to send a ping to the bot.
 
 Command | Details
 --------|---------
-events | Get next seven events from the Chadev calendar
+events | Gets next seven events from the Chadev calendar
 foo    | Causes HAL to reply with a BAR
 help   | Displays the help message
 issue  | Returns the URL for the issue queue for the given CHadev project
 ping   | Causes HAL to reply with PONG
 source | Returns the URL for the given Chadev project
-SYN    | causes HAL to reply with ACK
+SYN    | Causes HAL to reply with ACK
 tableflip | Flips a table
 cageme | Sends Nic Cage to infiltrate your brain
-who is    | Find out who a user is
-(name) is | Tell HAL who the user is
+who is `username` | Tells you who a user is
+`username` is `description of user` | Tells HAL who that user is
 
 ## License
 
