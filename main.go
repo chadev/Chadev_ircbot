@@ -44,7 +44,9 @@ ping      - Causes HAL to reply with a PONG
 source    - Give the URL to the named GitHub repo
 SYN       - Causes HAL to reply with an ACK
 tableflip - ...
-cageme    - Sends Nic Cage to infiltrate your brain`
+cageme    - Sends Nic Cage to infiltrate your brain
+who is    - Find out who a user is
+(name) is - Tell HAL who the user is`
 
 	return res.Send(helpMsg)
 })
@@ -70,6 +72,8 @@ func run() int {
 		sourceHandler,
 		issueHandler,
 		cageMeHandler,
+		whoisHandler,
+		isHandler,
 	)
 
 	if err := robot.Run(); err != nil {
@@ -80,5 +84,5 @@ func run() int {
 }
 
 func hear(pattern string, fn func(res *hal.Response) error) handler {
-	return hal.Hear(listenName+" "+pattern, fn)
+	return hal.Hear("^"+listenName+" "+pattern, fn)
 }
