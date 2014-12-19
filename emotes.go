@@ -11,9 +11,7 @@ import (
 	"github.com/danryan/hal"
 )
 
-var tableFlipped bool
-
-var tableFlipHandler = event(`tableflip`, func(res *hal.Response) error {
+var tableFlipHandler = hear(`tableflip`, func(res *hal.Response) error {
 	rand.Seed(time.Now().UTC().UnixNano())
 
 	e := []string{

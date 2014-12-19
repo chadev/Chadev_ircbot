@@ -21,19 +21,19 @@ type handler interface {
 
 var listenName = "Ash"
 
-var pingHandler = event(`ping`, func(res *hal.Response) error {
+var pingHandler = hear(`ping`, func(res *hal.Response) error {
 	return res.Send("PONG")
 })
 
-var fooHandler = event(`foo`, func(res *hal.Response) error {
+var fooHandler = hear(`foo`, func(res *hal.Response) error {
 	return res.Send("BAR")
 })
 
-var synHandler = event(`SYN`, func(res *hal.Response) error {
+var synHandler = hear(`SYN`, func(res *hal.Response) error {
 	return res.Send("ACK")
 })
 
-var helpHandler = event(`help`, func(res *hal.Response) error {
+var helpHandler = hear(`help`, func(res *hal.Response) error {
 	helpMsg := `HAL Chadev IRC Edition
 Supported commands:
 events    - Get next 7 events from the Chadev calendar
@@ -79,6 +79,6 @@ func run() int {
 	return 0
 }
 
-func event(pattern string, fn func(res *hal.Response) error) handler {
+func hear(pattern string, fn func(res *hal.Response) error) handler {
 	return hal.Hear(listenName+" "+pattern, fn)
 }
