@@ -84,5 +84,5 @@ func run() int {
 }
 
 func hear(pattern string, fn func(res *hal.Response) error) handler {
-	return hal.Hear(listenName+" "+pattern, fn)
+	return hal.Hear("^"+listenName+" "+pattern, fn)
 }
