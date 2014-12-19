@@ -11,7 +11,7 @@ import (
 	"github.com/danryan/hal"
 )
 
-var whoisHandler = hal.Hear(listenName+` who\s?is (.+)`, func(res *hal.Response) error {
+var whoisHandler = hear(`who\s?is (.+)`, func(res *hal.Response) error {
 	name := res.Match[1]
 	key := strings.ToUpper(name)
 	val, err := res.Robot.Store.Get(key)
@@ -22,7 +22,7 @@ var whoisHandler = hal.Hear(listenName+` who\s?is (.+)`, func(res *hal.Response)
 	return res.Send(fmt.Sprintf("%v is %v", name, string(val)))
 })
 
-var isHandler = hal.Hear(listenName+` ([^who].+) is (.+)`, func(res *hal.Response) error {
+var isHandler = hear(`([^who].+) is (.+)`, func(res *hal.Response) error {
 	name := res.Match[1]
 	key := strings.ToUpper(name)
 	role := res.Match[2]
