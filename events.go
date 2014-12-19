@@ -18,7 +18,7 @@ import (
 	"github.com/danryan/hal"
 )
 
-var eventHandler = event(`events`, func(res *hal.Response) error {
+var eventHandler = hear(`events`, func(res *hal.Response) error {
 	events, err := getCalendarEvents()
 	if err != nil {
 		hal.Logger.Error("failed to call Calendar API: %v", err)
