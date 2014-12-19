@@ -69,7 +69,7 @@ SYN    | Causes HAL to reply with ACK
 tableflip | Flips a table
 cageme | Sends Nic Cage to infiltrate your brain
 who is `username` | Tells you who a user is
-`username` is `description of user` | Tells HAL who that user is
+`username` is `description` | Tells HAL who that user is
 
 ## License
 
