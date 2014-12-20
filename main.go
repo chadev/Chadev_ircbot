@@ -78,6 +78,7 @@ func run() int {
 		isHandler,
 		selfHandler,
 		whoamHandler,
+		fizzBuzzHandler,
 	)
 
 	if err := robot.Run(); err != nil {
