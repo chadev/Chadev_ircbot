@@ -46,6 +46,7 @@ var helpHandler = hear(`help`, func(res *hal.Response) error {
 Supported commands:
 events    - Get next 7 events from the Chadev calendar
 foo       - Causes HAL to reply with a BAR
+fb n      - Returns the result of FizzBuzz for n
 help      - Displays this message
 issues    - Give the URL to the issue queue for the named GitHub repo
 ping      - Causes HAL to reply with a PONG
@@ -85,6 +86,7 @@ func run() int {
 		selfHandler,
 		whoamHandler,
 		quitHandler,
+		fizzBuzzHandler,
 	)
 
 	if err := robot.Run(); err != nil {
