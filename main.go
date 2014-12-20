@@ -77,6 +77,7 @@ func run() int {
 		whoisHandler,
 		isHandler,
 		selfHandler,
+		whoamHandler,
 	)
 
 	if err := robot.Run(); err != nil {
