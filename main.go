@@ -19,8 +19,6 @@ type handler interface {
 	Handle(res *hal.Response) error
 }
 
-var listenName = "Ash"
-
 var pingHandler = hear(`ping`, func(res *hal.Response) error {
 	return res.Send("PONG")
 })
@@ -31,6 +29,10 @@ var fooHandler = hear(`foo`, func(res *hal.Response) error {
 
 var synHandler = hear(`SYN`, func(res *hal.Response) error {
 	return res.Send("ACK")
+})
+
+var selfHandler = hear(`who are you`, func(res *hal.Response) error {
+	return res.Send("I'm Ash, the friendly #chadev bot.  I can preform a variety of tasks, and I am learning new tricks all the time.  I am open source, and pull requests are welcome!")
 })
 
 var helpHandler = hear(`help`, func(res *hal.Response) error {
@@ -74,6 +76,8 @@ func run() int {
 		cageMeHandler,
 		whoisHandler,
 		isHandler,
+		selfHandler,
+		whoamHandler,
 	)
 
 	if err := robot.Run(); err != nil {
@@ -84,5 +88,5 @@ func run() int {
 }
 
 func hear(pattern string, fn func(res *hal.Response) error) handler {
-	return hal.Hear("^"+listenName+" "+pattern, fn)
+	return hal.Hear("^(?i)Ash "+pattern, fn)
 }

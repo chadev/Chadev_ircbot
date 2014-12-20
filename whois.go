@@ -40,3 +40,14 @@ var isHandler = hear(`([^who].+) is (.+)`, func(res *hal.Response) error {
 	}
 	return res.Send(fmt.Sprintf("Got it. %v is %v\n", name, role))
 })
+
+var whoamHandler = hear(`who am (?i)I`, func(res *hal.Response) error {
+	name := res.UserName()
+	key := strings.ToUpper(name)
+	val, err := res.Robot.Store.Get(key)
+	if err != nil {
+		return res.Send(fmt.Sprintf("%s?  I have no memory of who you are.", name))
+	}
+
+	return res.Send(fmt.Sprintf("%s, you are %s", name, string(val)))
+})
