@@ -19,8 +19,6 @@ type handler interface {
 	Handle(res *hal.Response) error
 }
 
-var listenName = "Ash"
-
 var pingHandler = hear(`ping`, func(res *hal.Response) error {
 	return res.Send("PONG")
 })
@@ -84,5 +82,5 @@ func run() int {
 }
 
 func hear(pattern string, fn func(res *hal.Response) error) handler {
-	return hal.Hear("^"+listenName+" "+pattern, fn)
+	return hal.Hear("^(?i)Ash "+pattern, fn)
 }
