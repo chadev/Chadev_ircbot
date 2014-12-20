@@ -5,6 +5,7 @@
 package main
 
 import (
+	"fmt"
 	"os"
 
 	"github.com/danryan/hal"
@@ -33,6 +34,11 @@ var synHandler = hear(`SYN`, func(res *hal.Response) error {
 
 var selfHandler = hear(`who are you`, func(res *hal.Response) error {
 	return res.Send("I'm Ash, the friendly #chadev bot.  I can preform a variety of tasks, and I am learning new tricks all the time.  I am open source, and pull requests are welcome!")
+})
+
+var quitHandler = hear(`(.*)+/quit(.*)+`, func(res *hal.Response) error {
+	name := res.UserName()
+	return res.Send(fmt.Sprintf("No!  Bad %s!", name))
 })
 
 var helpHandler = hear(`help`, func(res *hal.Response) error {
@@ -79,6 +85,7 @@ func run() int {
 		isHandler,
 		selfHandler,
 		whoamHandler,
+		quitHandler,
 		fizzBuzzHandler,
 	)
 

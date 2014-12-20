@@ -16,10 +16,10 @@ var whoisHandler = hear(`who\s?is ([A-Za-z0-9\-_\{\}\[\]\\]+)`, func(res *hal.Re
 	key := strings.ToUpper(name)
 	val, err := res.Robot.Store.Get(key)
 	if err != nil {
-		res.Send(fmt.Sprintf("%v is no one to me\n", name))
+		res.Send(fmt.Sprintf("%s is no one to me\n", name))
 		return err
 	}
-	return res.Send(fmt.Sprintf("%v is %v", name, string(val)))
+	return res.Send(fmt.Sprintf("%s is %s", name, string(val)))
 })
 
 var isHandler = hear(`([^who].+) is (.+)`, func(res *hal.Response) error {
@@ -38,7 +38,7 @@ var isHandler = hear(`([^who].+) is (.+)`, func(res *hal.Response) error {
 		res.Send(fmt.Sprint("There's something wrong"))
 		return err
 	}
-	return res.Send(fmt.Sprintf("Got it. %v is %v\n", name, role))
+	return res.Send(fmt.Sprintf("Got it. %s is %s\n", name, role))
 })
 
 var whoamHandler = hear(`who am (?i)I`, func(res *hal.Response) error {
