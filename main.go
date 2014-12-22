@@ -42,22 +42,28 @@ var quitHandler = hear(`(.*)+/quit(.*)+`, func(res *hal.Response) error {
 })
 
 var helpHandler = hear(`help`, func(res *hal.Response) error {
-	helpMsg := `HAL Chadev IRC Edition
-Supported commands:
-events    - Get next 7 events from the Chadev calendar
-foo       - Causes HAL to reply with a BAR
-fb n      - Returns the result of FizzBuzz for n
-help      - Displays this message
-issues    - Give the URL to the issue queue for the named GitHub repo
-ping      - Causes HAL to reply with a PONG
-source    - Give the URL to the named GitHub repo
-SYN       - Causes HAL to reply with an ACK
-tableflip - ...
-cageme    - Sends Nic Cage to infiltrate your brain
-who is    - Find out who a user is
-(name) is - Tell HAL who the user is`
+	helpMsg := []string{
+		"HAL Chadev IRC Edition",
+		"Supported commands:",
+		"events               - Get next 7 events from the Chadev calendar",
+		"foo                  - Causes HAL to reply with a BAR",
+		"fb n                 - Return the resuld of FizzBuzz for n",
+		"help                 - Displays this message",
+		"issues               - Give the URL to the issue queue for the named GitHub repo",
+		"ping                 - Causes HAL to reply with a PONG",
+		"source               - Give the URL the the named GitHub repo",
+		"SYN                  - Causes HAL to reply with an ACK",
+		"tableflip 	      - Flip some tables",
+		"cageme               - Sends Nic Cage to infiltrate your brain",
+		"who is (username)    - Tells you who a user is",
+		"(username) is (role) - Tells the bot who that user is",
+	}
 
-	return res.Send(helpMsg)
+	for _, msg := range helpMsg {
+		res.Send(msg)
+	}
+
+	return nil
 })
 
 func main() {
