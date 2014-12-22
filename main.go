@@ -7,6 +7,7 @@ package main
 import (
 	"fmt"
 	"os"
+	"time"
 
 	"github.com/danryan/hal"
 	_ "github.com/danryan/hal/adapter/irc"
@@ -61,6 +62,7 @@ var helpHandler = hear(`help`, func(res *hal.Response) error {
 
 	for _, msg := range helpMsg {
 		res.Send(msg)
+		time.Sleep(100 * time.Millisecond)
 	}
 
 	return nil
