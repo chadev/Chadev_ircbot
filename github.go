@@ -34,6 +34,10 @@ var issueHandler = hear(`issue (.+)`, func(res *hal.Response) error {
 })
 
 func getGitHubURL(s string) (string, error) {
+	if s == "" {
+		s = "Chadev_ircbot"
+	}
+
 	// build the GitHub URL
 	URL := fmt.Sprintf("https://github.com/chadev/%s", url.QueryEscape(s))
 
@@ -45,6 +49,10 @@ func getGitHubURL(s string) (string, error) {
 }
 
 func getIssueURL(s string) (string, error) {
+	if s == "" {
+		s = "Chadev_ircbot"
+	}
+
 	// build the URL
 	URL := fmt.Sprintf("https://github.com/chadev/%s/issues", url.QueryEscape(s))
 
