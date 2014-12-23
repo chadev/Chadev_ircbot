@@ -9,12 +9,13 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"strings"
 
 	"github.com/danryan/hal"
 )
 
-var sourceHandler = hear(`source (.+)`, func(res *hal.Response) error {
-	URL, err := getGitHubURL(res.Match[1])
+var sourceHandler = hear(`source(.*)`, func(res *hal.Response) error {
+	URL, err := getGitHubURL(strings.TrimSpace(res.Match[1]))
 	if err != nil {
 		hal.Logger.Error(fmt.Sprintf("unable to get GitHub URL: %v\n", err))
 		return res.Send(fmt.Sprintf("Fetching URL for %s failed, possibly misspelled?", res.Match[1]))
@@ -23,8 +24,8 @@ var sourceHandler = hear(`source (.+)`, func(res *hal.Response) error {
 	return res.Send(URL)
 })
 
-var issueHandler = hear(`issue (.+)`, func(res *hal.Response) error {
-	URL, err := getIssueURL(res.Match[1])
+var issueHandler = hear(`issue(.*)`, func(res *hal.Response) error {
+	URL, err := getIssueURL(strings.TrimSpace(res.Match[1]))
 	if err != nil {
 		hal.Logger.Error(fmt.Sprintf("unable to get issue URL: %v\n", err))
 		return res.Send(fmt.Sprintf("Fetching issue queue URL for %s failed, possibly misspelled?", res.Match[1]))
