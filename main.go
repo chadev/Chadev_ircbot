@@ -95,6 +95,8 @@ func run() int {
 		whoamHandler,
 		quitHandler,
 		fizzBuzzHandler,
+		noteStoreHandler,
+		noteGetHandler,
 	)
 
 	if err := robot.Run(); err != nil {
