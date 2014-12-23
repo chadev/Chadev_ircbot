@@ -16,6 +16,8 @@ import (
 	_ "github.com/danryan/hal/store/redis"
 )
 
+const VERSION = "2014-12-23"
+
 // handler is an interface for objects to implement in order to respond to messages.
 type handler interface {
 	Handle(res *hal.Response) error
@@ -44,7 +46,7 @@ var quitHandler = hear(`(.*)+/quit(.*)+`, func(res *hal.Response) error {
 
 var helpHandler = hear(`help`, func(res *hal.Response) error {
 	helpMsg := []string{
-		"HAL Chadev IRC Edition",
+		"HAL Chadev IRC Edition build: " + VERSION,
 		"Supported commands:",
 		"events - Gets next seven events from the Chadev calendar",
 		"foo - Causes HAL to reply with a BAR",
