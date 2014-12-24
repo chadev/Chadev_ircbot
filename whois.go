@@ -35,7 +35,7 @@ var isHandler = hear(`([^who].+) is (.+)`, func(res *hal.Response) error {
 
 	err = res.Robot.Store.Set(key, []byte(roleToStore))
 	if err != nil {
-		res.Send(fmt.Sprint("There's something wrong"))
+		res.Send("There's something wrong")
 		return err
 	}
 	return res.Send(fmt.Sprintf("Got it. %s is %s\n", name, role))
