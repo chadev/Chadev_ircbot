@@ -63,6 +63,8 @@ fb n   | Return the result of FizzBuzz for n
 help   | Displays the help message
 issue  | Returns the URL for the issue queue for the given CHadev project
 ping   | Causes HAL to reply with PONG
+recall `key` | Causes the bot to read back a stored note
+remember `key`: `note` | Tells the to remember something
 source | Returns the URL for the given Chadev project
 SYN    | Causes HAL to reply with ACK
 tableflip | Flips some table
