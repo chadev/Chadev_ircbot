@@ -22,7 +22,7 @@ var whoisHandler = hear(`who\s?is ([A-Za-z0-9\-_\{\}\[\]\\]+)`, func(res *hal.Re
 	return res.Send(fmt.Sprintf("%s is %s", name, string(val)))
 })
 
-var isHandler = hear(`([^who].+) is (.+)`, func(res *hal.Response) error {
+var isHandler = hear(`([^(who|remember)].+) is (.+)`, func(res *hal.Response) error {
 	name := res.Match[1]
 	key := strings.ToUpper(name)
 	role := res.Match[2]
