@@ -7,6 +7,7 @@ package main
 import (
 	"fmt"
 	"os"
+	"time"
 
 	"github.com/danryan/hal"
 	_ "github.com/danryan/hal/adapter/irc"
@@ -14,6 +15,8 @@ import (
 	_ "github.com/danryan/hal/store/memory"
 	_ "github.com/danryan/hal/store/redis"
 )
+
+const VERSION = "2014-12-23"
 
 // handler is an interface for objects to implement in order to respond to messages.
 type handler interface {
@@ -43,24 +46,27 @@ var quitHandler = hear(`(.*)+/quit(.*)+`, func(res *hal.Response) error {
 
 var helpHandler = hear(`help`, func(res *hal.Response) error {
 	helpMsg := []string{
-		"HAL Chadev IRC Edition",
+		"HAL Chadev IRC Edition build: " + VERSION,
 		"Supported commands:",
-		"events               - Get next 7 events from the Chadev calendar",
-		"foo                  - Causes HAL to reply with a BAR",
-		"fb n                 - Return the resuld of FizzBuzz for n",
-		"help                 - Displays this message",
-		"issues               - Give the URL to the issue queue for the named GitHub repo",
-		"ping                 - Causes HAL to reply with a PONG",
-		"source               - Give the URL the the named GitHub repo",
-		"SYN                  - Causes HAL to reply with an ACK",
-		"tableflip 	      - Flip some tables",
-		"cageme               - Sends Nic Cage to infiltrate your brain",
-		"who is (username)    - Tells you who a user is",
+		"events - Gets next seven events from the Chadev calendar",
+		"foo - Causes the bot to reply with a BAR",
+		"fb n - Return the result of FizzBuzz for n",
+		"help - Displays this message",
+		"issue - Returns the bot to the issue queue for the given Chadev project",
+		"ping - Causes the bot to reply with a PONG",
+		"recall (key) - Causes the bot to read back a stored note",
+		"remember (key): (note) - Tells the bot to remember something",
+		"source - Returns the URL the the given Chadev project",
+		"SYN - Causes the bot to reply with ACK",
+		"tableflip - Flip some tables",
+		"cageme - Sends Nic Cage to infiltrate your brain",
+		"who is (username) - Tells you who a user is",
 		"(username) is (role) - Tells the bot who that user is",
 	}
 
 	for _, msg := range helpMsg {
 		res.Send(msg)
+		time.Sleep(100 * time.Millisecond)
 	}
 
 	return nil
@@ -93,6 +99,8 @@ func run() int {
 		whoamHandler,
 		quitHandler,
 		fizzBuzzHandler,
+		noteStoreHandler,
+		noteGetHandler,
 	)
 
 	if err := robot.Run(); err != nil {
