@@ -112,7 +112,7 @@ func devGithubMessage(d Dev) string {
 	}
 }
 
-var chadevCountHandler = hear(`chadevs count`, func(res *hal.Response) error {
+var chadevCountHandler = hear(`chadevs count`, "chadevs count", "Count of all members of Chadev", func(res *hal.Response) error {
 	chadevs, err := getChadevs()
 	if err != nil {
 		hal.Logger.Error(fmt.Sprintf("Unable to get chadevs count: %v\n", err))
@@ -122,7 +122,7 @@ var chadevCountHandler = hear(`chadevs count`, func(res *hal.Response) error {
 	return res.Send(fmt.Sprintf("There are currently %s chadevs.", strconv.Itoa(devsCount(chadevs))))
 })
 
-var chadevListAllHandler = hear(`chadevs all`, func(res *hal.Response) error {
+var chadevListAllHandler = hear(`chadevs all`, "chadevs all", "List all members of Chadev", func(res *hal.Response) error {
 	chadevs, err := getChadevs()
 	if err != nil {
 		hal.Logger.Error(fmt.Sprintf("Unable to get list of chadevs: %v\n", err))
@@ -134,7 +134,7 @@ var chadevListAllHandler = hear(`chadevs all`, func(res *hal.Response) error {
 	return res.Send(fmt.Sprintf("The following people are members of Chadev: %s", lst))
 })
 
-var chadevInfoHandler = hear(`chadevs info (.+)`, func(res *hal.Response) error {
+var chadevInfoHandler = hear(`chadevs info (.+)`, "chadevs info (full name)", "Get info about Chadev member. Will also try to guess the name you meant if you spell the person's name wrong", func(res *hal.Response) error {
 	chadevs, err := getChadevs()
 	if err != nil {
 		hal.Logger.Error(fmt.Sprintf("Unable to get info of chadever: %v\n", err))

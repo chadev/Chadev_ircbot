@@ -23,48 +23,39 @@ type handler interface {
 	Handle(res *hal.Response) error
 }
 
-var pingHandler = hear(`ping`, func(res *hal.Response) error {
+var helpMessages = make(map[string]string)
+
+var pingHandler = hear(`ping`, "ping", "Responds with a PONG", func(res *hal.Response) error {
 	return res.Send("PONG")
 })
 
-var fooHandler = hear(`foo`, func(res *hal.Response) error {
+var fooHandler = hear(`foo`, "foo", "Responds with BAR", func(res *hal.Response) error {
 	return res.Send("BAR")
 })
 
-var synHandler = hear(`SYN`, func(res *hal.Response) error {
+var synHandler = hear(`SYN`, "SYN", "Responds with ACK", func(res *hal.Response) error {
 	return res.Send("ACK")
 })
 
-var selfHandler = hear(`who are you`, func(res *hal.Response) error {
+var selfHandler = hear(`who are you`, "self", "", func(res *hal.Response) error {
 	return res.Send("I'm Ash, the friendly #chadev bot.  I can preform a variety of tasks, and I am learning new tricks all the time.  I am open source, and pull requests are welcome!")
 })
 
-var quitHandler = hear(`(.*)+/quit(.*)+`, func(res *hal.Response) error {
+var quitHandler = hear(`(.*)+/quit(.*)+`, "quit", "", func(res *hal.Response) error {
 	name := res.UserName()
 	return res.Send(fmt.Sprintf("No!  Bad %s!", name))
 })
 
-var helpHandler = hear(`help`, func(res *hal.Response) error {
+var helpHandler = hear(`help`, "help", "Displays this message", func(res *hal.Response) error {
 	helpMsg := []string{
 		"HAL Chadev IRC Edition build: " + VERSION,
 		"Supported commands:",
-		"events - Gets next seven events from the Chadev calendar",
-		"foo - Causes the bot to reply with a BAR",
-		"fb n - Return the result of FizzBuzz for n",
-		"help - Displays this message",
-		"issue - Returns the bot to the issue queue for the given Chadev project",
-		"ping - Causes the bot to reply with a PONG",
-		"recall (key) - Causes the bot to read back a stored note",
-		"remember (key): (note) - Tells the bot to remember something",
-		"source - Returns the URL the the given Chadev project",
-		"SYN - Causes the bot to reply with ACK",
-		"tableflip - Flip some tables",
-		"cageme - Sends Nic Cage to infiltrate your brain",
-		"who is (username) - Tells you who a user is",
-		"(username) is (role) - Tells the bot who that user is",
-		"chadevs count - Count of all members of Chadev",
-		"chadevs all - List all members of Chadev",
-		"chadevs info (full name) - Get info about Chadev member. Will also try to guess the name you meant if you spell the person's name wrong",
+	}
+
+	for command, message := range helpMessages {
+		if command != "" && message != "" {
+			helpMsg = append(helpMsg, command+" - "+message+"\n")
+		}
 	}
 
 	for _, msg := range helpMsg {
@@ -74,6 +65,15 @@ var helpHandler = hear(`help`, func(res *hal.Response) error {
 
 	return nil
 })
+
+func hear(pattern string, command string, message string, fn func(res *hal.Response) error) handler {
+	addHelpMessage(command, message)
+	return hal.Hear("^(?i)Ash "+pattern, fn)
+}
+
+func addHelpMessage(command string, message string) {
+	helpMessages[command] = message
+}
 
 func main() {
 	os.Exit(run())
@@ -97,9 +97,9 @@ func run() int {
 		issueHandler,
 		cageMeHandler,
 		whoisHandler,
+		whoamHandler,
 		isHandler,
 		selfHandler,
-		whoamHandler,
 		quitHandler,
 		fizzBuzzHandler,
 		noteStoreHandler,
@@ -114,8 +114,4 @@ func run() int {
 		return 1
 	}
 	return 0
-}
-
-func hear(pattern string, fn func(res *hal.Response) error) handler {
-	return hal.Hear("^(?i)Ash "+pattern, fn)
 }
