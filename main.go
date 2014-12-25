@@ -103,6 +103,7 @@ func run() int {
 		noteGetHandler,
 		chadevCountHandler,
 		chadevListAllHandler,
+		chadevInfoHandler,
 	)
 
 	if err := robot.Run(); err != nil {
