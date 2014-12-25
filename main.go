@@ -101,6 +101,7 @@ func run() int {
 		fizzBuzzHandler,
 		noteStoreHandler,
 		noteGetHandler,
+		chadevCountHandler,
 	)
 
 	if err := robot.Run(); err != nil {
