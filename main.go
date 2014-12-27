@@ -25,15 +25,15 @@ type handler interface {
 
 var helpMessages = make(map[string]string)
 
-var pingHandler = hear(`ping`, "ping", "Responds with a PONG", func(res *hal.Response) error {
+var pingHandler = hear(`ping`, "ping", "Causes Ash to reply with PONG", func(res *hal.Response) error {
 	return res.Send("PONG")
 })
 
-var fooHandler = hear(`foo`, "foo", "Responds with BAR", func(res *hal.Response) error {
+var fooHandler = hear(`foo`, "foo", "Causes Ash to reply with a BAR", func(res *hal.Response) error {
 	return res.Send("BAR")
 })
 
-var synHandler = hear(`SYN`, "SYN", "Responds with ACK", func(res *hal.Response) error {
+var synHandler = hear(`SYN`, "SYN", "Causes Ash to reply with ACK", func(res *hal.Response) error {
 	return res.Send("ACK")
 })
 
