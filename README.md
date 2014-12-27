@@ -71,6 +71,9 @@ tableflip | Flips some table
 cageme | Sends Nic Cage to infiltrate your brain
 who is `username` | Tells you who a user is
 `username` is `description` | Tells HAL who that user is
+chadevs count | Count of all members of Chadev
+chadevs all | List all members of Chadev
+chadevs info `full name` | Get info about Chadev member or will try to guess the name you meant
 
 ## License
 

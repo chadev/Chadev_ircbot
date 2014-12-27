@@ -62,6 +62,9 @@ var helpHandler = hear(`help`, func(res *hal.Response) error {
 		"cageme - Sends Nic Cage to infiltrate your brain",
 		"who is (username) - Tells you who a user is",
 		"(username) is (role) - Tells the bot who that user is",
+		"chadevs count - Count of all members of Chadev",
+		"chadevs all - List all members of Chadev",
+		"chadevs info (full name) - Get info about Chadev member. Will also try to guess the name you meant if you spell the person's name wrong",
 	}
 
 	for _, msg := range helpMsg {
@@ -101,6 +104,9 @@ func run() int {
 		fizzBuzzHandler,
 		noteStoreHandler,
 		noteGetHandler,
+		chadevCountHandler,
+		chadevListAllHandler,
+		chadevInfoHandler,
 	)
 
 	if err := robot.Run(); err != nil {
