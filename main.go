@@ -104,6 +104,7 @@ func run() int {
 		fizzBuzzHandler,
 		noteStoreHandler,
 		noteGetHandler,
+		noteRemoveHandler,
 		chadevCountHandler,
 		chadevListAllHandler,
 		chadevInfoHandler,
