@@ -11,6 +11,20 @@ The bot is written in Go, and reqiures [Go 1 and higher](http://golang.org/doc/i
 
 Currently this is unbuildable with Go 1.4, due to the way C and CGO are handled.  See the [Go 1.4 release notes](http://golang.org/doc/go1.4#swig) and [Issue #39 on HAL's issue tracker](https://github.com/danryan/hal/issues/39) for more details.
 
+### Running tests
+
+With the source code downloaded, the unit tests can be ran at anytime with the following:
+
+    go test .
+
+For more details the tests can be can verbosely with:
+
+    go test -v .
+
+The tests can be can at the sametime as installing the bot with the ```-t``` flag
+
+    go get -t github.com/chadev/Chadev_ircbot
+
 ### Redis and persistent storage
 
 By default the bot will use a memory storage.  This is fine for testing or development.
