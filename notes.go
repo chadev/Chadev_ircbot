@@ -11,7 +11,7 @@ import (
 	"github.com/danryan/hal"
 )
 
-var noteStoreHandler = hear(`remember (\w+): (.+)`, func(res *hal.Response) error {
+var noteStoreHandler = hear(`remember (\w+): (.+)`, "recall (key)", "Causes the bot to read back a stored note", func(res *hal.Response) error {
 	key := strings.ToUpper(res.Match[1])
 	msg := res.Match[2]
 
@@ -23,7 +23,7 @@ var noteStoreHandler = hear(`remember (\w+): (.+)`, func(res *hal.Response) erro
 	return res.Send("Got it!")
 })
 
-var noteGetHandler = hear(`recall (\w+)`, func(res *hal.Response) error {
+var noteGetHandler = hear(`recall (\w+)`, "remember (key)", "Tells Ash to remember something", func(res *hal.Response) error {
 	key := strings.ToUpper(res.Match[1])
 	val, err := res.Robot.Store.Get(key)
 	if err != nil {
@@ -31,4 +31,19 @@ var noteGetHandler = hear(`recall (\w+)`, func(res *hal.Response) error {
 	}
 
 	return res.Send(fmt.Sprintf("%s, here is what I recall for that: %s", res.UserName(), val))
+})
+
+var noteRemoveHandler = hear(`forget (\w+)`, "forget (key)", "Tells Ash to forget something", func(res *hal.Response) error {
+	key := strings.ToUpper(res.Match[1])
+	_, err := res.Robot.Store.Get(key)
+	if err != nil {
+		return res.Send(fmt.Sprintf("I have no memery of %s", res.Match[1]))
+	}
+
+	err = res.Robot.Store.Delete(key)
+	if err != nil {
+		return res.Send(fmt.Sprintf("I seem to be unable to forget about %s", res.Match[1]))
+	}
+
+	return res.Send("I have forgotten it.")
 })

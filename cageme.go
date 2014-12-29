@@ -11,7 +11,7 @@ import (
 	"github.com/danryan/hal"
 )
 
-var cageMeHandler = hear(`cageme`, func(res *hal.Response) error {
+var cageMeHandler = hear(`cageme`, "cageme", "Sends Nic Cage to infiltrate your brain", func(res *hal.Response) error {
 	root := "http://cageme.herokuapp.com"
 	num := strconv.Itoa(int(rand.Float64()*79 + 1))
 

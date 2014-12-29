@@ -10,7 +10,7 @@ import (
 	"github.com/danryan/hal"
 )
 
-var fizzBuzzHandler = hear(`fb ([0-9]+)`, func(res *hal.Response) error {
+var fizzBuzzHandler = hear(`fb ([0-9]+)`, "fb (n)", "Returns the result of FizzBuzz for n", func(res *hal.Response) error {
 	i, err := strconv.ParseInt(res.Match[1], 10, 16)
 	if err != nil {
 		res.Send("What are you even?")

@@ -14,7 +14,7 @@ import (
 	"github.com/danryan/hal"
 )
 
-var sourceHandler = hear(`source(.*)`, func(res *hal.Response) error {
+var sourceHandler = hear(`source (.+)`, "source", "Give the URL to the named GitHub repo", func(res *hal.Response) error {
 	URL, err := getGitHubURL(strings.TrimSpace(res.Match[1]))
 	if err != nil {
 		hal.Logger.Error(fmt.Sprintf("unable to get GitHub URL: %v\n", err))
@@ -24,7 +24,7 @@ var sourceHandler = hear(`source(.*)`, func(res *hal.Response) error {
 	return res.Send(URL)
 })
 
-var issueHandler = hear(`issue(.*)`, func(res *hal.Response) error {
+var issueHandler = hear(`issue(.*)`, "issue", "Give the URL to the issue queue for the named GitHub repo", func(res *hal.Response) error {
 	args := make([]string, 2)
 	if res.Match[1] != "" {
 		res.Match[1] = strings.TrimSpace(res.Match[1]) // trim leading and tailing whitespace from the match
