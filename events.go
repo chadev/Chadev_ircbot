@@ -28,6 +28,16 @@ var eventHandler = hear(`events`, "events", "Get next 7 events from the Chadev c
 	return res.Send(events)
 })
 
+var partyHandler = hear(`where('s)?(\sis)? the party at(\?)?`, "where's the party at?", "Get the next event from the Chadev calendar", func(res *hal.Response) error {
+	event, err := getNextEvent()
+	if err != nil {
+		hal.Logger.Error("failed to call Calendar API: %v", err)
+		return res.Send("Could not fetch data from Google Calendar API, please try again later")
+	}
+
+	return res.Send(event)
+})
+
 const baseURL = "https://www.googleapis.com/calendar/v3/calendars"
 
 var accessToken AccessToken
@@ -295,4 +305,59 @@ func formatDate(s, e string) string {
 	}
 
 	return o
+}
+
+func getNextEvent() (string, error) {
+	var err error
+
+	if accessToken.Token == "" ||
+		accessToken.expiredToken() {
+		accessToken, err = getOauth2Token()
+		if err != nil {
+			return "", err
+		}
+	}
+
+	URL := fmt.Sprintf("%s/4qc3thgj9ocunpfist563utr6g@group.calendar.google.com/events?access_token=%s&singleEvents=true&orderBy=startTime&timeMin=%s&maxResults=1",
+		baseURL, url.QueryEscape(accessToken.Token),
+		url.QueryEscape(time.Now().Format("2006-01-02T15:04:05Z")))
+	resp, err := http.Get(URL)
+	if err != nil {
+		return "", err
+	}
+	defer resp.Body.Close()
+
+	body, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		return "", err
+	}
+
+	var E Event
+
+	err = json.Unmarshal(body, &E)
+	if err != nil {
+		return "", err
+	}
+
+	eventDetails := getEventDetails(E)
+
+	return eventDetails, err
+}
+
+func getEventDetails(e Event) string {
+	var output string
+
+	output = "Next event: "
+	for _, event := range e.Items {
+		output += event.Summary
+		output += " ("
+		if event.Start.DateTime != "" {
+			output += formatDatetime(event.Start.DateTime)
+		} else {
+			output += formatDate(event.Start.Date, event.End.Date)
+		}
+		output += ")"
+	}
+
+	return output
 }
