@@ -28,10 +28,9 @@ var eventHandler = hear(`events`, "events", "Get next 7 events from the Chadev c
 	return res.Send(events)
 })
 
-var (
-	baseURL     = "https://www.googleapis.com/calendar/v3/calendars"
-	accessToken AccessToken
-)
+const baseURL = "https://www.googleapis.com/calendar/v3/calendars"
+
+var accessToken AccessToken
 
 // AccessToken contains the current oauth2 token and its expiry time.
 type AccessToken struct {
@@ -143,8 +142,10 @@ type EventOrganizer struct {
 
 // EventDateTime contains the fields for the "start" and "end" objects.
 type EventDateTime struct {
+	// Date is the start/end date, used for all day/multi day events
+	Date string `json:"date,omitempty"`
 	// DateTime is the start/end datetime in  RFC 3339 format
-	DateTime string `json:"dateTime"`
+	DateTime string `json:"dateTime,omitempty"`
 	// TimeZone is the Timezone for the event
 	TimeZone string `json:"timeZone,omitempty"`
 }
@@ -179,6 +180,7 @@ func getCalendarEvents() (string, error) {
 	if err != nil {
 		return "", err
 	}
+	//hal.Logger.Info(fmt.Sprintf("%#v", string(body)))
 
 	var Events Event
 
@@ -186,6 +188,7 @@ func getCalendarEvents() (string, error) {
 	if err != nil {
 		return "", err
 	}
+	hal.Logger.Info(fmt.Sprintf("%#v", Events))
 
 	eventList := getEventList(Events)
 
@@ -252,17 +255,46 @@ func getEventList(events Event) string {
 		} else {
 			output += ", " + event.Summary
 		}
-		output += " (" + formatDate(event.Start.DateTime) + ")"
+		output += " ("
+		if event.Start.DateTime != "" {
+			output += formatDatetime(event.Start.DateTime)
+		} else {
+			output += formatDate(event.Start.Date, event.End.Date)
+		}
+		output += ")"
 	}
 
 	return output
 }
 
-func formatDate(s string) string {
+func formatDatetime(s string) string {
 	date, err := time.Parse(time.RFC3339, s)
 	if err != nil {
 		return ""
 	}
 
 	return date.Format("01/02 3:04 pm")
+}
+
+func formatDate(s, e string) string {
+	var o string
+	if s == e {
+		date, err := time.Parse("2006-01-02", s)
+		if err != nil {
+			return ""
+		}
+		o = date.Format("01/02")
+	} else {
+		sDate, err := time.Parse("2006-01-02", s)
+		if err != nil {
+			return ""
+		}
+		eDate, err := time.Parse("2006-01-02", e)
+		if err != nil {
+			return ""
+		}
+		// TODO format date to return
+	}
+
+	return o
 }
