@@ -180,7 +180,6 @@ func getCalendarEvents() (string, error) {
 	if err != nil {
 		return "", err
 	}
-	//hal.Logger.Info(fmt.Sprintf("%#v", string(body)))
 
 	var Events Event
 
@@ -188,7 +187,6 @@ func getCalendarEvents() (string, error) {
 	if err != nil {
 		return "", err
 	}
-	hal.Logger.Info(fmt.Sprintf("%#v", Events))
 
 	eventList := getEventList(Events)
 
@@ -293,7 +291,7 @@ func formatDate(s, e string) string {
 		if err != nil {
 			return ""
 		}
-		// TODO format date to return
+		o = sDate.Format("01/02") + " - " + eDate.Format("01/02")
 	}
 
 	return o
