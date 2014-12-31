@@ -110,6 +110,7 @@ func run() int {
 		chadevInfoHandler,
 		fatherHandler,
 		partyHandler,
+		whoBackHandler,
 	)
 
 	if err := robot.Run(); err != nil {
