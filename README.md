@@ -88,6 +88,7 @@ who is `username` | Tells you who a user is
 chadevs count | Count of all members of Chadev
 chadevs all | List all members of Chadev
 chadevs info `full name` | Get info about Chadev member or will try to guess the name you meant
+what [are|is] (query) | Has the bot search for something, return the URL for the results
 
 ## License
 
