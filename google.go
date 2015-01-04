@@ -14,7 +14,13 @@ import (
 
 var whatAreHandler = hear(`what (are|is) (.*)`, "what [are|is] (query)", "Has the bot search for something", func(res *hal.Response) error {
 	query := res.Match[2]
-	return res.Send(query)
+	URL, err := getSearchURL(query)
+	if err != nil {
+		hal.Logger.Error(err)
+		return res.Send("%s, sorry I wasn't able to search for that!", res.UserName())
+	}
+
+	return res.Send(fmt.Sprintf("%s, here is the search results: %s", res.UserName(), URL))
 })
 
 func getSearchURL(q string) (string, error) {
