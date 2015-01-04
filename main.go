@@ -111,6 +111,7 @@ func run() int {
 		fatherHandler,
 		partyHandler,
 		whoBackHandler,
+		whatAreHandler,
 	)
 
 	if err := robot.Run(); err != nil {
