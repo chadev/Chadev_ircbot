@@ -16,7 +16,7 @@ import (
 	_ "github.com/danryan/hal/store/redis"
 )
 
-const VERSION = "2014-12-28"
+const VERSION = "2015-01-04"
 
 // handler is an interface for objects to implement in order to respond to messages.
 type handler interface {
