@@ -12,12 +12,6 @@ func TestValidateURL(t *testing.T) {
 	}
 }
 
-func TestInvalidURL(t *testing.T) {
-	if validateURL("https://github.com/chadev/foo") {
-		t.Error("an invalid URL came back as being valid")
-	}
-}
-
 func TestGetGitHubURL(t *testing.T) {
 	URL, err := getGitHubURL("Chadev_ircbot")
 	if err != nil {

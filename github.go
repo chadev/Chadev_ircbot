@@ -7,7 +7,6 @@ package main
 import (
 	"errors"
 	"fmt"
-	"net/http"
 	"net/url"
 	"strings"
 
@@ -97,12 +96,8 @@ func getIssueIDURL(u, i string) (string, error) {
 
 func validateURL(u string) bool {
 	// check if the URL is valid
-	resp, err := http.Get(u)
+	_, err := url.Parse(u)
 	if err != nil {
-		return false
-	}
-
-	if resp.StatusCode != 200 {
 		return false
 	}
 
