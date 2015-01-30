@@ -112,6 +112,7 @@ func run() int {
 		partyHandler,
 		whoBackHandler,
 		whatAreHandler,
+		musicHandler,
 	)
 
 	if err := robot.Run(); err != nil {

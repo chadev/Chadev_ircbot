@@ -11,7 +11,7 @@ import (
 	"github.com/danryan/hal"
 )
 
-var noteStoreHandler = hear(`remember (\w+): (.+)`, "recall (key)", "Causes the bot to read back a stored note", func(res *hal.Response) error {
+var noteStoreHandler = hear(`remember (\w+): (.+)`, "remeber (key): (value)", "Causes the bot to read back a stored note", func(res *hal.Response) error {
 	key := strings.ToUpper(res.Match[1])
 	msg := res.Match[2]
 
@@ -23,7 +23,7 @@ var noteStoreHandler = hear(`remember (\w+): (.+)`, "recall (key)", "Causes the 
 	return res.Send("Got it!")
 })
 
-var noteGetHandler = hear(`recall (\w+)`, "remember (key)", "Tells Ash to remember something", func(res *hal.Response) error {
+var noteGetHandler = hear(`recall (\w+)`, "recall (key)", "Tells Ash to remember something", func(res *hal.Response) error {
 	key := strings.ToUpper(res.Match[1])
 	val, err := res.Robot.Store.Get(key)
 	if err != nil {

@@ -7,14 +7,13 @@ package main
 import (
 	"errors"
 	"fmt"
-	"net/http"
 	"net/url"
 	"strings"
 
 	"github.com/danryan/hal"
 )
 
-var sourceHandler = hear(`source (.+)`, "source", "Give the URL to the named GitHub repo", func(res *hal.Response) error {
+var sourceHandler = hear(`source(.*)`, "source", "Give the URL to the named GitHub repo", func(res *hal.Response) error {
 	URL, err := getGitHubURL(strings.TrimSpace(res.Match[1]))
 	if err != nil {
 		hal.Logger.Error(fmt.Sprintf("unable to get GitHub URL: %v\n", err))
@@ -58,6 +57,7 @@ func getGitHubURL(s string) (string, error) {
 	if s == "" {
 		s = "Chadev_ircbot"
 	}
+	hal.Logger.Info(s)
 
 	// build the GitHub URL
 	URL := fmt.Sprintf("https://github.com/chadev/%s", url.QueryEscape(s))
@@ -97,12 +97,8 @@ func getIssueIDURL(u, i string) (string, error) {
 
 func validateURL(u string) bool {
 	// check if the URL is valid
-	resp, err := http.Get(u)
+	_, err := url.Parse(u)
 	if err != nil {
-		return false
-	}
-
-	if resp.StatusCode != 200 {
 		return false
 	}
 
