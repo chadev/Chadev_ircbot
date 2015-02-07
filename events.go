@@ -21,7 +21,7 @@ import (
 var eventHandler = hear(`events`, "events", "Get next 7 events from the Chadev calendar", func(res *hal.Response) error {
 	events, err := getCalendarEvents()
 	if err != nil {
-		hal.Logger.Error("failed to call Calendar API: %v", err)
+		hal.Logger.Error(fmt.Sprintf("failed to call Calendar API: %v", err))
 		return res.Send("Could not fetch data from Google Calendar API, please try again later")
 	}
 
@@ -31,7 +31,7 @@ var eventHandler = hear(`events`, "events", "Get next 7 events from the Chadev c
 var partyHandler = hear(`where('s)?(\sis)? the party at(\?)?`, "where's the party at?", "Get the next event from the Chadev calendar", func(res *hal.Response) error {
 	event, err := getNextEvent()
 	if err != nil {
-		hal.Logger.Error("failed to call Calendar API: %v", err)
+		hal.Logger.Error(fmt.Sprintf("failed to call Calendar API: %v", err))
 		return res.Send("Could not fetch data from Google Calendar API, please try again later")
 	}
 
@@ -147,7 +147,7 @@ type EventOrganizer struct {
 	// DisplayName is the name of the event organizer
 	DisplayName string `json:"displayName"`
 	// Self denotes if the organizer is the current user
-	Self bool `json:self"`
+	Self bool `json:"self"`
 }
 
 // EventDateTime contains the fields for the "start" and "end" objects.

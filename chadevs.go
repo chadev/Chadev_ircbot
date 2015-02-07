@@ -26,7 +26,7 @@ type Dev struct {
 	Github     string `json:"github"`
 	GravatarID string `json:"gravatar-id"`
 	Name       string `json:"name"`
-	URLs       []Link `json"urls"`
+	URLs       []Link `json:"urls"`
 }
 
 // Link contains the name of the site and URL that is linked in a devs profile
