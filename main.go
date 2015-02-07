@@ -16,6 +16,7 @@ import (
 	_ "github.com/danryan/hal/store/redis"
 )
 
+// VERSION contians the current verison number and revison if need be
 const VERSION = "2015-01-30"
 
 // handler is an interface for objects to implement in order to respond to messages.
