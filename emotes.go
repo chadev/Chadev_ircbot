@@ -17,6 +17,7 @@ var tableFlipHandler = hear(`tableflip`, "tableflip", "...", func(res *hal.Respo
 	e := []string{
 		"(ノಠ益ಠ)ノ彡┻━┻",
 		`(╯°□°）╯︵ ┻━┻`,
+		`(╯°□°）╯︵ <ǝlqɐʇ>`,
 		`the table flipped you! ノ┬─┬ノ ︵ ( \o°o)\`,
 		"┻━┻ ︵ヽ(`Д´)ﾉ︵ ┻━┻",
 	}
