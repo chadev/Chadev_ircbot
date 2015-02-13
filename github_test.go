@@ -1,4 +1,4 @@
-// Copyright 2014 Chadev. All rights reserved.
+// Copyright 2014-2015 Chadev. All rights reserved.
 // Use of this source code is governed by a BSD-style
 // license that can be found in the LICENSE file.
 
@@ -19,7 +19,7 @@ func TestGetGitHubURL(t *testing.T) {
 	}
 
 	t.Logf("returned URL: %s\n", URL)
-	if !validateURL(URL) {
+	if !validateGitHubURL(URL) {
 		t.Error("the URL came back as invalid")
 	}
 }
@@ -31,7 +31,7 @@ func TestGetIssueURL(t *testing.T) {
 	}
 
 	t.Logf("returned URL: %s\n", URL)
-	if !validateURL(URL) {
+	if !validateGitHubURL(URL) {
 		t.Error("the URL came back as invalid")
 	}
 }
@@ -43,7 +43,7 @@ func TestGetIssueIDURL(t *testing.T) {
 	}
 
 	t.Logf("returned URL: %s\n", URL)
-	if !validateURL(URL) {
+	if !validateGitHubURL(URL) {
 		t.Error("the issue queue URL came back as invalid")
 	}
 
@@ -53,7 +53,7 @@ func TestGetIssueIDURL(t *testing.T) {
 	}
 
 	t.Logf("returned URL: %s\n", URL)
-	if !validateURL(URL) {
+	if !validateGitHubURL(URL) {
 		t.Errorf("the issue URL came back as invalid")
 	}
 }

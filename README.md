@@ -54,6 +54,7 @@ HAL\_REDIS\_URL | host:port (defaults to localhost:6379)
 CHADEV\_TOKEN | Google Oauth2 refresh token (string)
 CHADEV\_ID | Google Oauth2 Client ID (string)
 CHADEV\_SECRET | Google Oauth2 Client Secret (string)
+CHADEV\_MEETUP | Meetup API Key (string)
 
 ## Running the bot
 
@@ -88,8 +89,9 @@ who is `username` | Tells you who a user is
 chadevs count | Count of all members of Chadev
 chadevs all | List all members of Chadev
 chadevs info `full name` | Get info about Chadev member or will try to guess the name you meant
-what [are\|is] (query) | Has the bot search for something, return the URL for the results
+what \[are\|is\] (query) | Has the bot search for something, return the URL for the results
 give me some music | Return list of music playlists popular in the community
+is today dev lunch day? | Returns if today is Dev Lunch day, if so gives details on it
 
 ## License
 

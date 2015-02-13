@@ -1,4 +1,4 @@
-// Copyright 2014 Chadev. All rights reserved.
+// Copyright 2014-2015 Chadev. All rights reserved.
 // Use of this source code is governed by a BSD-style
 // license that can be found in the LICENSE file.
 
@@ -16,20 +16,23 @@ import (
 	"github.com/texttheater/golang-levenshtein/levenshtein"
 )
 
+// Chadevs contains devs record from JSON output
 type Chadevs struct {
 	Devs []Dev `json:"devs"`
 }
 
+// Dev contains information about each dev
 type Dev struct {
 	Github     string `json:"github"`
-	GravatarId string `json:"gravatar-id"`
+	GravatarID string `json:"gravatar-id"`
 	Name       string `json:"name"`
-	Urls       []Url  `json"urls"`
+	URLs       []Link `json:"urls"`
 }
 
-type Url struct {
+// Link contains the name of the site and URL that is linked in a devs profile
+type Link struct {
 	Name string `json:"name"`
-	Url  string `json:"url"`
+	URL  string `json:"url"`
 }
 
 func getChadevs() (Chadevs, error) {
@@ -83,33 +86,33 @@ func findDev(d Chadevs, name string) (Dev, bool) {
 }
 
 func devUrlsMessage(d Dev) string {
-	cnt := len(d.Urls)
+	cnt := len(d.URLs)
 	lst := make([]string, cnt)
 	for i := 0; i < cnt; i++ {
-		lst[i] = fmt.Sprintf("They have a %s. The URL is: %s.", d.Urls[i].Name, d.Urls[i].Url)
+		lst[i] = fmt.Sprintf("They have a %s. The URL is: %s.", d.URLs[i].Name, d.URLs[i].URL)
 	}
 
 	return strings.Join(lst, " ")
 }
 
-func devGravatarUrl(d Dev, size int) string {
-	return fmt.Sprintf("http://www.gravatar.com/avatar/%s.jpg?s=%v", d.GravatarId, size)
+func devGravatarURL(d Dev, size int) string {
+	return fmt.Sprintf("http://www.gravatar.com/avatar/%s.jpg?s=%v", d.GravatarID, size)
 }
 
 func devGravatarMessage(d Dev, size int) string {
-	if d.GravatarId == "" {
+	if d.GravatarID == "" {
 		return "Oh no! We don't have their gravatar. What they may or may not look like is a total mystery!"
-	} else {
-		return fmt.Sprintf("This is their gravatar, which may or may not look like them: %s.", devGravatarUrl(d, size))
 	}
+
+	return fmt.Sprintf("This is their gravatar, which may or may not look like them: %s.", devGravatarURL(d, size))
 }
 
 func devGithubMessage(d Dev) string {
 	if d.Github == "" {
 		return "Oh no! We don't know who they are on GitHub, so we can't see where their code go!"
-	} else {
-		return fmt.Sprintf("Their Github is https://github.com/%s.", d.Github)
 	}
+
+	return fmt.Sprintf("Their Github is https://github.com/%s.", d.Github)
 }
 
 var chadevCountHandler = hear(`chadevs count`, "chadevs count", "Count of all members of Chadev", func(res *hal.Response) error {
@@ -144,7 +147,7 @@ var chadevInfoHandler = hear(`chadevs info (.+)`, "chadevs info (full name)", "G
 	dev, exactmatch := findDev(chadevs, res.Match[1])
 	if !exactmatch {
 		return res.Send(fmt.Sprintf("Didn't find %s. Did you mean %s?", res.Match[1], dev.Name))
-	} else {
-		return res.Send(fmt.Sprintf("Ah, %s! %s %s %s", dev.Name, devGravatarMessage(dev, 200), devGithubMessage(dev), devUrlsMessage(dev)))
 	}
+
+	return res.Send(fmt.Sprintf("Ah, %s! %s %s %s", dev.Name, devGravatarMessage(dev, 200), devGithubMessage(dev), devUrlsMessage(dev)))
 })

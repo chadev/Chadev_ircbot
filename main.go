@@ -1,4 +1,4 @@
-// Copyright 2014 Chadev. All rights reserved.
+// Copyright 2014-2015 Chadev. All rights reserved.
 // Use of this source code is governed by a BSD-style
 // license that can be found in the LICENSE file.
 
@@ -16,6 +16,7 @@ import (
 	_ "github.com/danryan/hal/store/redis"
 )
 
+// VERSION contians the current verison number and revison if need be
 const VERSION = "2015-01-30"
 
 // handler is an interface for objects to implement in order to respond to messages.
@@ -113,6 +114,7 @@ func run() int {
 		whoBackHandler,
 		whatAreHandler,
 		musicHandler,
+		lunchHandler,
 	)
 
 	if err := robot.Run(); err != nil {
