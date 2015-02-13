@@ -32,3 +32,13 @@ func getSearchURL(q string) (string, error) {
 
 	return URL, nil
 }
+
+func validateURL(u string) bool {
+	// check if the URL is valid
+	_, err := url.Parse(u)
+	if err != nil {
+		return false
+	}
+
+	return true
+}

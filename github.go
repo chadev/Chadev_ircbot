@@ -7,6 +7,7 @@ package main
 import (
 	"errors"
 	"fmt"
+	"net/http"
 	"net/url"
 	"strings"
 
@@ -17,7 +18,7 @@ var sourceHandler = hear(`source(.*)`, "source", "Give the URL to the named GitH
 	URL, err := getGitHubURL(strings.TrimSpace(res.Match[1]))
 	if err != nil {
 		hal.Logger.Error(fmt.Sprintf("unable to get GitHub URL: %v\n", err))
-		return res.Send(fmt.Sprintf("Fetching URL for %s failed, possibly misspelled?", res.Match[1]))
+		return res.Send(fmt.Sprintf("Fetching URL for %s failed, possibly misspelled or not a Chadev repo?", res.Match[1]))
 	}
 
 	return res.Send(URL)
@@ -39,7 +40,7 @@ var issueHandler = hear(`issue(.*)`, "issue", "Give the URL to the issue queue f
 	URL, err := getIssueURL(args[0])
 	if err != nil {
 		hal.Logger.Error(fmt.Sprintf("unable to get issue URL: %v\n", err))
-		return res.Send(fmt.Sprintf("Fetching issue queue URL for %s failed, possibly misspelled?", args[0]))
+		return res.Send(fmt.Sprintf("Fetching issue queue URL for %s failed, possibly misspelled or not a Chadev repo?", args[0]))
 	}
 
 	if args[1] != "" {
@@ -62,7 +63,7 @@ func getGitHubURL(s string) (string, error) {
 	// build the GitHub URL
 	URL := fmt.Sprintf("https://github.com/chadev/%s", url.QueryEscape(s))
 
-	if !validateURL(URL) {
+	if !validateGitHubURL(URL) {
 		return "", errors.New("unable to get GitHub URL: no repo with URL: " + URL)
 	}
 
@@ -77,7 +78,7 @@ func getIssueURL(s string) (string, error) {
 	// build the URL
 	URL := fmt.Sprintf("https://github.com/chadev/%s/issues", url.QueryEscape(s))
 
-	if !validateURL(URL) {
+	if !validateGitHubURL(URL) {
 		return "", errors.New("unable to get GitHub URL: no repo with URL: " + URL)
 	}
 
@@ -88,17 +89,21 @@ func getIssueIDURL(u, i string) (string, error) {
 	// build the URL
 	URL := fmt.Sprintf("%s/%s", u, i)
 
-	if !validateURL(URL) {
+	if !validateGitHubURL(URL) {
 		return "", errors.New("unable to get issue URL: no repo or issue with URL: " + URL)
 	}
 
 	return URL, nil
 }
 
-func validateURL(u string) bool {
+func validateGitHubURL(u string) bool {
 	// check if the URL is valid
-	_, err := url.Parse(u)
+	resp, err := http.Get(u)
 	if err != nil {
+		return false
+	}
+
+	if resp.StatusCode != 200 {
 		return false
 	}
 
