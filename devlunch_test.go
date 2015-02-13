@@ -4,9 +4,16 @@
 
 package main
 
-import "testing"
+import (
+	"os"
+	"testing"
+)
 
 func TestGetMeetupEvents(t *testing.T) {
+	if os.Getenv("CHADEV_MEETUP") == "" {
+		t.Skip("no meetup API key set, skipping test")
+	}
+
 	_, err := getTalkDetails()
 	if err != nil {
 		t.Error(err)
