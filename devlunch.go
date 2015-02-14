@@ -80,9 +80,9 @@ func (e *MeetupEvents) parseDateTime(today bool) string {
 
 	var fT string
 	if today {
-		fT = t.Format("13:05")
+		fT = t.Format("3:04 pm")
 	} else {
-		fT = t.Format("01/02 13:05")
+		fT = t.Format("01/02 3:04 pm")
 	}
 
 	return fT
