@@ -15,7 +15,7 @@ import (
 	"github.com/danryan/hal"
 )
 
-var lunchHandler = hear(`is today (devlunch|dev lunch) day?`, "is today devlunch day", "Tells if today is lunch day, and what the talk is", func(res *hal.Response) error {
+var lunchHandler = hear(`is today (devlunch|dev lunch) day\b`, "is today devlunch day", "Tells if today is lunch day, and what the talk is", func(res *hal.Response) error {
 	d := time.Now().Weekday().String()
 	if d != "Thursday" {
 		msg, err := getTalkDetails(false)
