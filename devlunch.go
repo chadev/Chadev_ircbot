@@ -36,6 +36,16 @@ var lunchHandler = hear(`is today (devlunch|dev lunch) day\b`, "is today devlunc
 	return res.Send(fmt.Sprintf("Yes!  %s", msg))
 })
 
+var talkHandler = hear(`tell me about the next talk\b`, "what is the next talk", "Returns details on the next Chadev Lunch Talk", func(res *hal.Response) error {
+	msg, err := getTalkDetails(false)
+	if err != nil {
+		hal.Logger.Error(err)
+		return res.Send("Sorry I was unable to get details on the next dev lunch.  Please check https://meetup.com/chadevs")
+	}
+
+	return res.Send(msg)
+})
+
 type Meetup struct {
 	Results []MeetupEvents `json:"results"`
 }
