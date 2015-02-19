@@ -46,10 +46,12 @@ var talkHandler = hear(`tell me about the next talk\b`, "what is the next talk",
 	return res.Send(msg)
 })
 
+// Meetup contains the ruturn value from the Meetup API.
 type Meetup struct {
 	Results []MeetupEvents `json:"results"`
 }
 
+// MeetupEvents contains details for each event in the return value.
 type MeetupEvents struct {
 	Venue    MeetupVenue `json:"venue"`
 	EventURL string      `json:"event_url"`
@@ -57,6 +59,7 @@ type MeetupEvents struct {
 	Time     int64       `json:"time"`
 }
 
+// MeetupVenue contains details about the venue for each event.
 type MeetupVenue struct {
 	Name string `json:"name"`
 }
