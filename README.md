@@ -92,6 +92,7 @@ chadevs info `full name` | Get info about Chadev member or will try to guess the
 what \[are\|is\] (query) | Has the bot search for something, return the URL for the results
 give me some music | Return list of music playlists popular in the community
 is today dev lunch day? | Returns if today is Dev Lunch day, if so gives details on it
+tell me about the next talk | Returns details for the next listed Chadev Lunch talk
 
 ## License
 
