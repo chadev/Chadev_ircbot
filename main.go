@@ -61,7 +61,7 @@ var helpHandler = hear(`help`, "help", "Displays this message", func(res *hal.Re
 
 	for _, msg := range helpMsg {
 		res.Send(msg)
-		time.Sleep(100 * time.Millisecond)
+		time.Sleep(1 * time.Second)
 	}
 
 	return nil
