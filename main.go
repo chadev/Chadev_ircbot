@@ -116,6 +116,8 @@ func run() int {
 		musicHandler,
 		lunchHandler,
 		talkHandler,
+		addTalkHandler,
+		devTalkLinkHandler,
 	)
 
 	if err := robot.Run(); err != nil {
