@@ -38,7 +38,9 @@ You will also need to supply the proper environment variables (found below)
 
 ## Configuring
 
-The bot is configured purely by system evironmental variables.  To work with the Google Calendar API, this also requires Oauth2 credentuals from Google.
+The bot is configured purely by system evironmental variables.  Various services that
+the bot works with requires API keys or other Oauth2 credentials, see the documentaiton for
+the service in question on how to get these.
 
 ### Required environtment variables
 
