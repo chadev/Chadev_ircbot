@@ -7,7 +7,6 @@ package main
 import (
 	"fmt"
 	"os"
-	"time"
 
 	"github.com/danryan/hal"
 	_ "github.com/danryan/hal/adapter/irc"
@@ -17,7 +16,7 @@ import (
 )
 
 // VERSION contians the current verison number and revison if need be
-const VERSION = "2015-02-19"
+const VERSION = "2015-02-21 Alpha"
 
 // handler is an interface for objects to implement in order to respond to messages.
 type handler interface {
@@ -49,8 +48,8 @@ var quitHandler = hear(`(.*)+/quit(.*)+`, "quit", "", func(res *hal.Response) er
 
 var helpHandler = hear(`help`, "help", "Displays this message", func(res *hal.Response) error {
 	helpMsg := []string{
-		"HAL Chadev IRC Edition build: " + VERSION,
-		"Supported commands:",
+		"HAL Chadev IRC Edition build: " + VERSION + "\n",
+		"Supported commands:\n",
 	}
 
 	for command, message := range helpMessages {
@@ -59,10 +58,13 @@ var helpHandler = hear(`help`, "help", "Displays this message", func(res *hal.Re
 		}
 	}
 
+	var text string
 	for _, msg := range helpMsg {
-		res.Send(msg)
-		time.Sleep(1 * time.Second)
+		text = text + msg
 	}
+
+	text = uploadHelpMsg(text)
+	res.Send(fmt.Sprintf("My usage information can be found at %s", text))
 
 	return nil
 })

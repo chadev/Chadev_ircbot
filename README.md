@@ -55,6 +55,7 @@ CHADEV\_TOKEN | Google Oauth2 refresh token (string)
 CHADEV\_ID | Google Oauth2 Client ID (string)
 CHADEV\_SECRET | Google Oauth2 Client Secret (string)
 CHADEV\_MEETUP | Meetup API Key (string)
+CHADEV\_PASTEBIN | Pastebin API Key (string)
 
 ## Running the bot
 
