@@ -38,7 +38,7 @@ You will also need to supply the proper environment variables (found below)
 
 ## Configuring
 
-The bot is configured purely by system evironmental variables.  To work with the Google Calendar API, this also requires Oauth2 credentuals from Google. To set those up follow the directions [found here](https://developers.google.com/accounts/docs/OAuth2ForDevices).
+The bot is configured purely by system evironmental variables.  To work with the Google Calendar API, this also requires Oauth2 credentuals from Google.
 
 ### Required environtment variables
 
@@ -51,11 +51,11 @@ HAL\_IRC\_SERVER | URL (string)
 HAL\_IRC\_CHANNELS | comma seperated list of channels
 HAL\_STORE | "redis" or "memory" (defaults to memory)
 HAL\_REDIS\_URL | host:port (defaults to localhost:6379)
-CHADEV\_TOKEN | Google Oauth2 refresh token (string)
-CHADEV\_ID | Google Oauth2 Client ID (string)
-CHADEV\_SECRET | Google Oauth2 Client Secret (string)
-CHADEV\_MEETUP | Meetup API Key (string)
-CHADEV\_PASTEBIN | Pastebin API Key (string)
+CHADEV\_TOKEN | [Google Oauth2 refresh token](https://developers.google.com/accounts/docs/OAuth2ForDevices) (string)
+CHADEV\_ID | [Google Oauth2 Client ID](https://developers.google.com/accounts/docs/OAuth2ForDevices) (string)
+CHADEV\_SECRET | [Google Oauth2 Client Secret](https://developers.google.com/accounts/docs/OAuth2ForDevices) (string)
+CHADEV\_MEETUP | [Meetup API Key](https://secure.meetup.com/meetup_api/key/) (string)
+CHADEV\_PASTEBIN | [Pastebin API Key](http://pastebin.com/api#1 (string)
 
 ## Running the bot
 
