@@ -19,7 +19,7 @@ const githubReadme = "https://github.com/chadev/Chadev_ircbot/blob/master/README
 func uploadHelpMsg(msg string) string {
 	resp, err := http.PostForm("http://pastebin.com/api/api_post.php",
 		url.Values{"api_dev_key": {os.Getenv("CHADEV_PASTEBIN")},
-			"api_paste_private":     {"0"},
+			"api_paste_private":     {"1"},
 			"api_paste_name":        {"Ash Usage"},
 			"api_paste_expire_date": {"10M"},
 			"api_option":            {"paste"},
