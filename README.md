@@ -55,7 +55,7 @@ CHADEV\_TOKEN | [Google Oauth2 refresh token](https://developers.google.com/acco
 CHADEV\_ID | [Google Oauth2 Client ID](https://developers.google.com/accounts/docs/OAuth2ForDevices) (string)
 CHADEV\_SECRET | [Google Oauth2 Client Secret](https://developers.google.com/accounts/docs/OAuth2ForDevices) (string)
 CHADEV\_MEETUP | [Meetup API Key](https://secure.meetup.com/meetup_api/key/) (string)
-CHADEV\_PASTEBIN | [Pastebin API Key](http://pastebin.com/api#1 (string)
+CHADEV\_PASTEBIN | [Pastebin API Key](http://pastebin.com/api#1) (string)
 
 ## Running the bot
 
