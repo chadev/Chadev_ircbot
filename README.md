@@ -111,13 +111,13 @@ have read and write access to.
 
 In BASH and ZSH this may look like:
 
-  export GOPATH=$HOME/go
-  export GOBIN=$GOPATH/bin
+    export GOPATH=$HOME/go
+    export GOBIN=$GOPATH/bin
 
 In CSH and TCSH this may look like:
 
-  setenv GOPATH=$HOME/go
-  setenv GOBIN=$GOPATH/bin
+    setenv GOPATH=$HOME/go
+    setenv GOBIN=$GOPATH/bin
 
 The ```go get``` command uses the $GOPATH to store both source code and compiled versions of all packagse you install.
 The source code gets vendored in ```$GOPATH/src```  Built packages (libraries) gets stored in ```$GOPATH/pkg``` under the same directory structure as the source code.
@@ -150,7 +150,7 @@ The way this system works is as follows:
 -  5 :beer: = [Ballmer Peak](http://xkcd.com/323/)
 -  6+ :beer: = WTF????  Should you even keyboard right now?  :worried:
 
-For heavy drinking sessions feel free to subsitute :beer: with :beers:
+For heavy drinking sessions feel free to subsitute :beer: with :beers:.  For an example of this in use, see commit [44b154](https://github.com/chadev/Chadev_ircbot/commit/44b1544d9f56e10ba1083f036e852ac786458a31)
 
 ## License
 
