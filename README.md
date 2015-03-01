@@ -99,6 +99,59 @@ tell me about the next talk | Returns details for the next listed Chadev Lunch t
 devlunch url (date) (url) | Set live stream url for the dev lunch talks
 link to devlunch | Returns the link to the dev lunch live stream
 
+## Contributing
+
+Do you want to help make Ash better?  Looking for a project to work on to help you learn/try out Go?  Then you found the correct part of this README :thumbsup:.
+The point of this section of the README is to help you get started contributing to the project.
+
+### Getting Started
+
+The first thing you should do is get [Go 1.0 or higher](http://golang.org/doc/install) installed, making sure to set your $GOPATH  and $GOBIN to a directory that you
+have read and write access to.
+
+In BASH and ZSH this may look like:
+
+  export GOPATH=$HOME/go
+  export GOBIN=$GOPATH/bin
+
+In CSH and TCSH this may look like:
+
+  setenv GOPATH=$HOME/go
+  setenv GOBIN=$GOPATH/bin
+
+The ```go get``` command uses the $GOPATH to store both source code and compiled versions of all packagse you install.
+The source code gets vendored in ```$GOPATH/src```  Built packages (libraries) gets stored in ```$GOPATH/pkg``` under the same directory structure as the source code.
+Compiled binaries gets placed in ```$GOPATH/bin``` or ```$GOBIN``` for short, as such the $GOBIN needs to be added to your $PATH.
+
+After that is done it is preferable to setup your IDE/text editor, while a lot of modern IDEs and text editors have native Golang support if you prefer one that
+does not then chances are there is a plugin/extension for your preffered IDE/editor if extensable.
+
+For VIM the [vim-go](https://github.com/fatih/vim-go) plugin is prefered.
+
+It is strongly reccomended to setup your IDE/Editor to run either ```gofmt``` or ```goimports```, installable by running ```go get golang.org/x/tools/cmd/goimports```.If a pull request is submitted and neither one has been ran on your code then the pull request my not be accepted until this is done, you will be politely
+asked/reminded to do so, or your pull request may be updated so that it complies with this.  While this may seem strict to new comers, this is the Go standard style
+guide, for an in depth reason behind this please read the sections on formatting to both [Effective Go](http://golang.org/doc/effective_go.html#formatting) and
+the [Go Code Review Comments](https://github.com/golang/go/wiki/CodeReviewComments#gofmt).
+
+Once all the technical things are out of the way, you are now ready to clone this repository and get started.  To get a copy of the repo, fork this repo and make your
+changes there and sumbit Pull Requests.  Please don't submit pull requests directly to the ```master``` branch as this branch should directly reflect the version of
+code that is currently deployed.  Instead submit your pull requsets to the ```develop``` branch.  Doing so does not mean that your pull requests wont be accepted by
+any means.
+
+Lastly don't be afraid to have fun with things!
+
+### Indicating developer intoxication levels during a commit (optional)
+
+When authoring a commit message feel free to add your current intoxication level, to keep things simple we have a 5 beer system inplace using GitHub's :beer: and :beers: emoji.
+
+The way this system works is as follows:
+
+-  1 :beer: = Not so drunk/just getting started
+-  5 :beer: = [Ballmer Peak](http://xkcd.com/323/)
+-  6+ :beer: = WTF????  Should you even keyboard right now?  :worried:
+
+For heavy drinking sessions feel free to subsitute :beer: with :beers:
+
 ## License
 
 Chadev IRC bot is licensed under the BSD 3-clause license.
