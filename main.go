@@ -120,6 +120,7 @@ func run() int {
 		talkHandler,
 		addTalkHandler,
 		devTalkLinkHandler,
+		isAliveHandler,
 	)
 
 	if err := robot.Run(); err != nil {
