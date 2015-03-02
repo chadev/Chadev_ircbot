@@ -98,6 +98,7 @@ is today dev lunch day? | Returns if today is Dev Lunch day, if so gives details
 tell me about the next talk | Returns details for the next listed Chadev Lunch talk
 devlunch url (date) (url) | Set live stream url for the dev lunch talks
 link to devlunch | Returns the link to the dev lunch live stream
+is `username` alive | Returns status of user
 
 ## Contributing
 
