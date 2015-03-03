@@ -10,7 +10,9 @@ import (
 	"github.com/danryan/hal"
 )
 
-var isAliveHandler = hear(`is ([A-Za-z0-9\-_\{\}\[\]\\]+) alive`, "is (name) alive", "Find out if a user is alive", func(res *hal.Response) error {
+var isAliveHandler = hear(`is ([A-Za-z0-9\-_\{\}\[\]\\\s]+) alive`, "is (name) alive", "Find out if a user is alive", func(res *hal.Response) error {
 	name := res.Match[1]
-	return res.Send(fmt.Sprintf("I can't find %s's heartbeat.. \nBut let's not jump to conclusions", name))
+	res.Send(fmt.Sprintf("I can't find %s's heartbeat..", name))
+	res.Send("But let's not jump to conclusions")
+	return nil
 })
