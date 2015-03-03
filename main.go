@@ -16,7 +16,7 @@ import (
 )
 
 // VERSION contians the current verison number and revison if need be
-const VERSION = "2015-03-02"
+const VERSION = "2015-03-03"
 
 // handler is an interface for objects to implement in order to respond to messages.
 type handler interface {
