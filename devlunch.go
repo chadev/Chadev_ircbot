@@ -91,7 +91,7 @@ var addTalkHandler = hear(`devlunch url ([a-z0-9-\s]*)(http(s)?://.+)`, "devlunc
 var devTalkLinkHandler = hear(`link to devlunch`, "link to devlunch", "Returns the link to the dev lunch live stream", func(res *hal.Response) error {
 	// check if today is Thursday
 	t := time.Now()
-	if t.Weekday().String() != "thursday" {
+	if t.Weekday().String() != "Thursday" {
 		return res.Send("Sorry today is not dev lunch day.")
 	}
 
