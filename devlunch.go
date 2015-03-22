@@ -37,7 +37,7 @@ var lunchHandler = hear(`is today (devlunch|dev lunch) day\b`, "is today devlunc
 	return res.Send(fmt.Sprintf("Yes!  %s", msg))
 })
 
-var talkHandler = hear(`tell me about the next talk\b`, "tell me about the next talk", "Returns details on the next Chadev Lunch Talk", func(res *hal.Response) error {
+var talkHandler = hear(`devlunch me`, "devlunch me", "Returns details on the next Chadev Lunch Talk", func(res *hal.Response) error {
 	msg, err := getTalkDetails(false)
 	if err != nil {
 		hal.Logger.Error(err)
