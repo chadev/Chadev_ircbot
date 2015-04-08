@@ -7,11 +7,10 @@ package main
 import (
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
-	"net/http"
-	"os"
 	"strings"
 	"time"
+
+	"./meetup"
 
 	"github.com/danryan/hal"
 )
@@ -19,7 +18,7 @@ import (
 var lunchHandler = hear(`is today (devlunch|dev lunch) day\b`, "is today devlunch day", "Tells if today is lunch day, and what the talk is", func(res *hal.Response) error {
 	d := time.Now().Weekday().String()
 	if d != "Thursday" {
-		msg, err := getTalkDetails(false)
+		msg, err := meetup.GetTalkDetails(false)
 		if err != nil {
 			hal.Logger.Error(err)
 			return res.Send("Sorry I was unable to get details on the next dev lunch.  Please check https://meetup.com/chadevs")
@@ -28,7 +27,7 @@ var lunchHandler = hear(`is today (devlunch|dev lunch) day\b`, "is today devlunc
 		return res.Send(fmt.Sprintf("No, sorry!  %s", msg))
 	}
 
-	msg, err := getTalkDetails(true)
+	msg, err := meetup.GetTalkDetails(true)
 	if err != nil {
 		hal.Logger.Error(err)
 		return res.Send("Sorry I was unable to get details on the next dev lunch.  Please check https://meetup.com/chadevs")
@@ -38,7 +37,7 @@ var lunchHandler = hear(`is today (devlunch|dev lunch) day\b`, "is today devlunc
 })
 
 var talkHandler = hear(`devlunch me`, "devlunch me", "Returns details on the next Chadev Lunch Talk", func(res *hal.Response) error {
-	msg, err := getTalkDetails(false)
+	msg, err := meetup.GetTalkDetails(false)
 	if err != nil {
 		hal.Logger.Error(err)
 		return res.Send("Sorry I was unable to get details on the next dev lunch.  Please check https://meetup.com/chadevs")
@@ -73,7 +72,7 @@ var addTalkHandler = hear(`devlunch url ([a-z0-9-\s]*)(http(s)?://.+)`, "devlunc
 		return res.Send(fmt.Sprintf("%s is not a valid URL", u))
 	}
 
-	b, err := json.Marshal(DevTalk{Date: date.Format("2006-01-02"), URL: u})
+	b, err := json.Marshal(meetup.DevTalk{Date: date.Format("2006-01-02"), URL: u})
 	if err != nil {
 		hal.Logger.Error(err)
 		return res.Send("I have failed you, I was unable to JSON")
@@ -102,7 +101,7 @@ var devTalkLinkHandler = hear(`link to devlunch`, "link to devlunch", "Returns t
 		return res.Send("Sorry, I don't have a URL for today's live stream.  You can check if it is posted to the Meeup page at http://www.meetup.com/chadevs/ or our Google+ page at https://plus.google.com/b/103401260409601780643/103401260409601780643/posts")
 	}
 
-	var talk DevTalk
+	var talk meetup.DevTalk
 	err = json.Unmarshal(b, &talk)
 	if err != nil {
 		hal.Logger.Error(err)
@@ -115,41 +114,3 @@ var devTalkLinkHandler = hear(`link to devlunch`, "link to devlunch", "Returns t
 
 	return res.Send(fmt.Sprintf("You can access the live stream for the talk here %s", talk.URL))
 })
-
-func (m *Meetup) string(lunchDay bool) string {
-	if !lunchDay {
-		return fmt.Sprintf("The next talk is \"%s\", you can join us at %s on %s.  If you plan to come please make sure you have RSVPed at %s",
-			m.Results[0].Name,
-			m.Results[0].Venue.Name,
-			m.Results[0].parseDateTime(false),
-			m.Results[0].EventURL)
-	}
-
-	return fmt.Sprintf("The talk today is \"%s\", you can join us at %s on %s.  If you plan to come please make sure you have RSVPed at %s",
-		m.Results[0].Name,
-		m.Results[0].Venue.Name,
-		m.Results[0].parseDateTime(true),
-		m.Results[0].EventURL)
-}
-
-func getTalkDetails(lunchDay bool) (string, error) {
-	URL := fmt.Sprintf("https://api.meetup.com/2/events?&sign=true&photo-host=secure&group_urlname=chadevs&page=20&key=%s", os.Getenv("CHADEV_MEETUP"))
-	resp, err := http.Get(URL)
-	if err != nil {
-		return "", err
-	}
-	defer resp.Body.Close()
-
-	body, err := ioutil.ReadAll(resp.Body)
-	if err != nil {
-		return "", err
-	}
-
-	var Events Meetup
-	err = json.Unmarshal(body, &Events)
-	if err != nil {
-		return "", err
-	}
-
-	return Events.string(lunchDay), nil
-}
