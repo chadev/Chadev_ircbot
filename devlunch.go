@@ -10,8 +10,7 @@ import (
 	"strings"
 	"time"
 
-	"./meetup"
-
+	"github.com/chadev/Chadev_ircbot/meetup"
 	"github.com/danryan/hal"
 )
 
