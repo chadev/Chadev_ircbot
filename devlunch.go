@@ -14,6 +14,11 @@ import (
 	"github.com/danryan/hal"
 )
 
+// DevTalk contains the dev talk live stream details.
+type DevTalk struct {
+	Date, URL string
+}
+
 var lunchHandler = hear(`is today (devlunch|dev lunch) day\b`, "is today devlunch day", "Tells if today is lunch day, and what the talk is", func(res *hal.Response) error {
 	d := time.Now().Weekday().String()
 	if d != "Thursday" {
@@ -71,7 +76,7 @@ var addTalkHandler = hear(`devlunch url ([a-z0-9-\s]*)(http(s)?://.+)`, "devlunc
 		return res.Send(fmt.Sprintf("%s is not a valid URL", u))
 	}
 
-	b, err := json.Marshal(meetup.DevTalk{Date: date.Format("2006-01-02"), URL: u})
+	b, err := json.Marshal(DevTalk{Date: date.Format("2006-01-02"), URL: u})
 	if err != nil {
 		hal.Logger.Error(err)
 		return res.Send("I have failed you, I was unable to JSON")
@@ -100,7 +105,7 @@ var devTalkLinkHandler = hear(`link to devlunch`, "link to devlunch", "Returns t
 		return res.Send("Sorry, I don't have a URL for today's live stream.  You can check if it is posted to the Meeup page at http://www.meetup.com/chadevs/ or our Google+ page at https://plus.google.com/b/103401260409601780643/103401260409601780643/posts")
 	}
 
-	var talk meetup.DevTalk
+	var talk DevTalk
 	err = json.Unmarshal(b, &talk)
 	if err != nil {
 		hal.Logger.Error(err)

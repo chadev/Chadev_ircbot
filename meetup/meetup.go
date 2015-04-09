@@ -27,11 +27,6 @@ type MeetupVenue struct {
 	Name string `json:"name"`
 }
 
-// DevTalk contains the dev talk live stream details.
-type DevTalk struct {
-	Date, URL string
-}
-
 func (e *MeetupEvents) parseDateTime(today bool) string {
 	// set the timezone, otherwise UTC will be used
 	loc, err := time.LoadLocation("America/New_York")
