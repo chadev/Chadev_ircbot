@@ -9,8 +9,6 @@ The bot is written in Go, and reqiures [Go 1 and higher](http://golang.org/doc/i
 
     go get github.com/chadev/Chadev_ircbot
 
-Currently this is unbuildable with Go 1.4, due to the way C and CGO are handled.  See the [Go 1.4 release notes](http://golang.org/doc/go1.4#swig) and [Issue #39 on HAL's issue tracker](https://github.com/danryan/hal/issues/39) for more details.
-
 ### Running tests
 
 With the source code downloaded, the unit tests can be ran at anytime with the following:
@@ -95,7 +93,7 @@ chadevs info `full name` | Get info about Chadev member or will try to guess the
 what \[are\|is\] (query) | Has the bot search for something, return the URL for the results
 give me some music | Return list of music playlists popular in the community
 is today dev lunch day? | Returns if today is Dev Lunch day, if so gives details on it
-tell me about the next talk | Returns details for the next listed Chadev Lunch talk
+devlunch me| Returns details for the next listed Chadev Lunch talk
 devlunch url (date) (url) | Set live stream url for the dev lunch talks
 link to devlunch | Returns the link to the dev lunch live stream
 is `username` alive | Returns status of user
