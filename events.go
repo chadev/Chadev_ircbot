@@ -198,6 +198,11 @@ func getCalendarEvents() (string, error) {
 		return "", err
 	}
 
+	// checkt to see if any items where returned from the API
+	if Events.Items == nil {
+		return "", errors.New("no events returned from Google Calendar")
+	}
+
 	eventList := getEventList(Events)
 
 	return eventList, nil

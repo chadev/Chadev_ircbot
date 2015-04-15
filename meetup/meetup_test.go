@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style
 // license that can be found in the LICENSE file.
 
-package main
+package meetup
 
 import (
 	"os"
@@ -21,7 +21,7 @@ func TestGetMeetupEvents(t *testing.T) {
 		l = true
 	}
 
-	_, err := getTalkDetails(l)
+	_, err := GetTalkDetails(l)
 	if err != nil {
 		t.Error(err)
 	}
