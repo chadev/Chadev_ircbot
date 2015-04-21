@@ -12,7 +12,7 @@ import (
 	"github.com/danryan/hal"
 )
 
-var whatAreHandler = hear(`what (are|is) (.*)`, "what [are|is] (query)", "Has the bot search for something", func(res *hal.Response) error {
+var whatAreHandler = hear(`what(are|is) (.*)`, "what [are|is] (query)", "Has the bot search for something", func(res *hal.Response) error {
 	query := res.Match[2]
 	URL, err := getSearchURL(query)
 	if err != nil {

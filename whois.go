@@ -11,7 +11,7 @@ import (
 	"github.com/danryan/hal"
 )
 
-var whoisHandler = hear(`who\s?is ([A-Za-z0-9\-_\{\}\[\]\\]+)`, "who is (name)", "Find out who a user is", func(res *hal.Response) error {
+var whoisHandler = hear(`whois ([A-Za-z0-9\-_\{\}\[\]\\]+)`, "whois (name)", "Find out who a user is", func(res *hal.Response) error {
 	name := res.Match[1]
 	key := strings.ToUpper(name)
 	val, err := res.Robot.Store.Get(key)
@@ -22,7 +22,7 @@ var whoisHandler = hear(`who\s?is ([A-Za-z0-9\-_\{\}\[\]\\]+)`, "who is (name)",
 	return res.Send(fmt.Sprintf("%s is %s", name, string(val)))
 })
 
-var isHandler = hear(`([^(who|remember)].+) is (.+)`, "(name) is (role)", "Tell Ash who the user is", func(res *hal.Response) error {
+var isHandler = hear(`(.+) is (.+)`, "(name) is (role)", "Tell Ash who the user is", func(res *hal.Response) error {
 	name := res.Match[1]
 	key := strings.ToUpper(name)
 	role := res.Match[2]
