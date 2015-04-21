@@ -18,6 +18,9 @@ type Groups struct {
 	Name string `json:"name"`
 	// URL for the group page/meetup page
 	URL string `json:"url"`
+	// Meetup is the group name from the meetup URL
+	// this is used for Meetup API calls.
+	Meetup string `json:"meetup_name"`
 }
 
 var groupListHandler = hear(`(groups|meetups) list`, "(groups|meetups) list", "Lists all groups that are known to Ash", func(res *hal.Response) error {
@@ -38,7 +41,7 @@ var groupListHandler = hear(`(groups|meetups) list`, "(groups|meetups) list", "L
 	for _, val := range g {
 		gn = append(gn, val.Name)
 	}
-	names := strings.Join(gn, " ")
+	names := strings.Join(gn, ", ")
 
 	return res.Send(fmt.Sprintf("Here is a list of groups: %s", names))
 })
@@ -66,7 +69,12 @@ var groupAddHandler = hear(`(groups|meetups) add (.+): (.+)`, "(groups|meetups) 
 		}
 	}
 
-	g = append(g, Groups{Name: name, URL: url})
+	var meetupName string
+	if strings.Contains(url, "meetup.com") {
+		meetupName = parseMeetupName(url)
+	}
+
+	g = append(g, Groups{Name: name, URL: url, Meetup: meetupName})
 	groups, err = json.Marshal(g)
 	if err != nil {
 		hal.Logger.Errorf("faild to build json: %v", err)
@@ -80,3 +88,46 @@ var groupAddHandler = hear(`(groups|meetups) add (.+): (.+)`, "(groups|meetups) 
 
 	return res.Send("Added new group")
 })
+
+var groupDetailsHandler = hear(`(group|meetup) details (.+)`, "(group|meetup) details [group name]", "Returns details about a group", func(res *hal.Response) error {
+	name := res.Match[1]
+
+	var g []Groups
+	groups, err := res.Robot.Store.Get("GROUPS")
+	if len(groups) > 0 {
+		err := json.Unmarshal(groups, &g)
+		if err != nil {
+			hal.Logger.Errorf("faild to parse json: %v", err)
+			return res.Send("Failed to parse groups list")
+		}
+	}
+
+	group := searchGroups(g, name)
+	e := Groups{}
+	if group == e {
+		// TODO catch group not found
+		hal.Logger.Warnf("no group with the name %s found", name)
+		return res.Send(fmt.Sprintf("I could not find a group with the name %s", name))
+	}
+
+	return res.Send(fmt.Sprintf("Group name: %s URL: %s", group.Name, group.URL))
+
+})
+
+func parseMeetupName(u string) string {
+	// meetup URLs are structured as www.meetup.com/(group name)
+	parts := strings.Split(u, "/")
+
+	return parts[len(parts)-1]
+}
+
+func searchGroups(g []Groups, n string) Groups {
+	var group Groups
+	for _, val := range g {
+		if val.Name == n {
+			group = val
+		}
+	}
+
+	return group
+}
