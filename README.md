@@ -85,7 +85,7 @@ source | Returns the URL for the given Chadev project
 SYN    | Causes Ash to reply with ACK
 tableflip | Flips some table
 cageme | Sends Nic Cage to infiltrate your brain
-who is `username` | Tells you who a user is
+whois `username` | Tells you who a user is
 `username` is `description` | Tells Ash who that user is
 chadevs count | Count of all members of Chadev
 chadevs all | List all members of Chadev
