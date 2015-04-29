@@ -103,9 +103,7 @@ var groupDetailsHandler = hear(`(group|meetup) details (.+)`, "(group|meetup) de
 	}
 
 	group := searchGroups(g, name)
-	e := Groups{}
-	if group == e {
-		// TODO catch group not found
+	if group.Name == "" {
 		hal.Logger.Warnf("no group with the name %s found", name)
 		return res.Send(fmt.Sprintf("I could not find a group with the name %s", name))
 	}
