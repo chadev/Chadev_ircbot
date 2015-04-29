@@ -90,7 +90,7 @@ var groupAddHandler = hear(`(groups|meetups) add (.+): (.+)`, "(groups|meetups) 
 })
 
 var groupDetailsHandler = hear(`(group|meetup) details (.+)`, "(group|meetup) details [group name]", "Returns details about a group", func(res *hal.Response) error {
-	name := res.Match[1]
+	name := res.Match[2]
 
 	var g []Groups
 	groups, _ := res.Robot.Store.Get("GROUPS")
@@ -102,7 +102,12 @@ var groupDetailsHandler = hear(`(group|meetup) details (.+)`, "(group|meetup) de
 		}
 	}
 
-	group := searchGroups(g, name)
+	if len(groups) == 0 {
+		hal.Logger.Error("no groups currently defined")
+		return res.Send("I currently don't know of any groups, try adding some first")
+	}
+
+	group := searchGroups(g, strings.ToLower(name))
 	if group.Name == "" {
 		hal.Logger.Warnf("no group with the name %s found", name)
 		return res.Send(fmt.Sprintf("I could not find a group with the name %s", name))
@@ -122,7 +127,7 @@ func parseMeetupName(u string) string {
 func searchGroups(g []Groups, n string) Groups {
 	var group Groups
 	for _, val := range g {
-		if val.Name == n {
+		if strings.ToLower(val.Name) == n {
 			group = val
 		}
 	}
