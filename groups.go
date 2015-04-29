@@ -93,7 +93,7 @@ var groupDetailsHandler = hear(`(group|meetup) details (.+)`, "(group|meetup) de
 	name := res.Match[1]
 
 	var g []Groups
-	groups, err := res.Robot.Store.Get("GROUPS")
+	groups, _ := res.Robot.Store.Get("GROUPS")
 	if len(groups) > 0 {
 		err := json.Unmarshal(groups, &g)
 		if err != nil {
