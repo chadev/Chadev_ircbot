@@ -123,6 +123,7 @@ func run() int {
 		isAliveHandler,
 		groupListHandler,
 		groupAddHandler,
+		groupDetailsHandler,
 	)
 
 	if err := robot.Run(); err != nil {
