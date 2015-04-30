@@ -124,6 +124,7 @@ func run() int {
 		groupListHandler,
 		groupAddHandler,
 		groupDetailsHandler,
+		groupRemoveHandler,
 	)
 
 	if err := robot.Run(); err != nil {

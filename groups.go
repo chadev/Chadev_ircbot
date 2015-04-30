@@ -117,6 +117,47 @@ var groupDetailsHandler = hear(`(group|meetup) details (.+)`, "(group|meetup) de
 
 })
 
+var groupRemoveHandler = hear(`(group|meetup) remove (.+)`, "(group|meetup) remove [group name]", "Removes a group that ash knows about", func(res *hal.Response) error {
+	name := res.Match[2]
+
+	var g []Groups
+	groups, err := res.Robot.Store.Get("GROUPS")
+	if err != nil {
+		hal.Logger.Error("no groups currently in the datastore")
+		res.Send("Sorry I don't know of any groups.")
+		return err
+	}
+
+	err = json.Unmarshal(groups, &g)
+	if err != nil {
+		hal.Logger.Errorf("couldn't unmarshal json: %v", err)
+		res.Send("Sorry I was unable to parse the json object")
+		return err
+	}
+
+	for i, group := range g {
+		if group.Name == name {
+			// remove the group from the slice
+			var e Groups
+			g[len(g)-1], g = e, append(g[:i], g[i+1:]...)
+		}
+	}
+	groups, err = json.Marshal(g)
+	if err != nil {
+		hal.Logger.Errorf("couldn't marshal json: %v", err)
+		res.Send("Sorry I was unable to generate json object")
+		return err
+	}
+	err = res.Robot.Store.Set("GROUPS", groups)
+	if err != nil {
+		hal.Logger.Errorf("error writing to datastore: %v", err)
+		res.Send("Sorry I was unable to update group listing")
+		return err
+	}
+
+	return res.Send("Group list updated")
+})
+
 func parseMeetupName(u string) string {
 	// meetup URLs are structured as www.meetup.com/(group name)
 	parts := strings.Split(u, "/")
