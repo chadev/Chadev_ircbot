@@ -121,6 +121,10 @@ func run() int {
 		addTalkHandler,
 		devTalkLinkHandler,
 		isAliveHandler,
+		groupListHandler,
+		groupAddHandler,
+		groupDetailsHandler,
+		groupRemoveHandler,
 	)
 
 	if err := robot.Run(); err != nil {

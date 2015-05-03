@@ -27,13 +27,7 @@ var isHandler = hear(`(.+) is (.+)`, "(name) is (role)", "Tell Ash who the user 
 	key := strings.ToUpper(name)
 	role := res.Match[2]
 
-	storedRoles, err := res.Robot.Store.Get(key)
-	roleToStore := role
-	if len(storedRoles) > 0 {
-		roleToStore = roleToStore + ", " + string(storedRoles)
-	}
-
-	err = res.Robot.Store.Set(key, []byte(roleToStore))
+	err := res.Robot.Store.Set(key, []byte(role))
 	if err != nil {
 		res.Send("There's something wrong")
 		return err
