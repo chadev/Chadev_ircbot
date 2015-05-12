@@ -7,7 +7,6 @@ package meetup
 import (
 	"os"
 	"testing"
-	"time"
 )
 
 func TestGetMeetupEvents(t *testing.T) {
@@ -15,13 +14,7 @@ func TestGetMeetupEvents(t *testing.T) {
 		t.Skip("no meetup API key set, skipping test")
 	}
 
-	var l bool
-	d := time.Now().Weekday().String()
-	if d == "Thursday" {
-		l = true
-	}
-
-	_, err := GetTalkDetails(l)
+	_, err := GetNextMeetup("chadevs")
 	if err != nil {
 		t.Error(err)
 	}
