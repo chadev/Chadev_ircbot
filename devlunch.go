@@ -22,7 +22,7 @@ type DevTalk struct {
 var lunchHandler = hear(`is today (devlunch|dev lunch) day\b`, "is today devlunch day", "Tells if today is lunch day, and what the talk is", func(res *hal.Response) error {
 	d := time.Now().Weekday().String()
 	if d != "Thursday" {
-		msg, err := meetup.GetTalkDetails(false)
+		msg, err := meetup.GetNextMeetup("chadevs")
 		if err != nil {
 			hal.Logger.Error(err)
 			return res.Send("Sorry I was unable to get details on the next dev lunch.  Please check https://meetup.com/chadevs")
@@ -31,7 +31,7 @@ var lunchHandler = hear(`is today (devlunch|dev lunch) day\b`, "is today devlunc
 		return res.Send(fmt.Sprintf("No, sorry!  %s", msg))
 	}
 
-	msg, err := meetup.GetTalkDetails(true)
+	msg, err := meetup.GetNextMeetup("chadevs")
 	if err != nil {
 		hal.Logger.Error(err)
 		return res.Send("Sorry I was unable to get details on the next dev lunch.  Please check https://meetup.com/chadevs")
@@ -41,7 +41,7 @@ var lunchHandler = hear(`is today (devlunch|dev lunch) day\b`, "is today devlunc
 })
 
 var talkHandler = hear(`devlunch me`, "devlunch me", "Returns details on the next Chadev Lunch Talk", func(res *hal.Response) error {
-	msg, err := meetup.GetTalkDetails(false)
+	msg, err := meetup.GetNextMeetup("chadevs")
 	if err != nil {
 		hal.Logger.Error(err)
 		return res.Send("Sorry I was unable to get details on the next dev lunch.  Please check https://meetup.com/chadevs")

@@ -9,6 +9,7 @@ import (
 	"fmt"
 	"strings"
 
+	"github.com/chadev/Chadev_ircbot/meetup"
 	"github.com/danryan/hal"
 )
 
@@ -113,8 +114,15 @@ var groupDetailsHandler = hear(`(group|meetup) details (.+)`, "(group|meetup) de
 		return res.Send(fmt.Sprintf("I could not find a group with the name %s", name))
 	}
 
-	return res.Send(fmt.Sprintf("Group name: %s URL: %s", group.Name, group.URL))
+	nextEvent, err := meetup.GetNextMeetup(group.Meetup)
+	if err != nil {
+		hal.Logger.Errorf("failed fetching event from meetup.com: %v", err)
+		return res.Send(fmt.Sprintf("Group name: %s URL: %s", group.Name, group.URL))
+	}
 
+	res.Send(fmt.Sprintf("Group name: %s URL: %s", group.Name, group.URL))
+	res.Send(nextEvent)
+	return nil
 })
 
 var groupRemoveHandler = hear(`(group|meetup) remove (.+)`, "(group|meetup) remove [group name]", "Removes a group that ash knows about", func(res *hal.Response) error {
