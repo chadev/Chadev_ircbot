@@ -117,11 +117,13 @@ var groupDetailsHandler = hear(`(group|meetup) details (.+)`, "(group|meetup) de
 	nextEvent, err := meetup.GetNextMeetup(group.Meetup)
 	if err != nil {
 		hal.Logger.Errorf("failed fetching event from meetup.com: %v", err)
-		return res.Send(fmt.Sprintf("Group name: %s URL: %s", group.Name, group.URL))
 	}
 
 	res.Send(fmt.Sprintf("Group name: %s URL: %s", group.Name, group.URL))
-	res.Send(nextEvent)
+	if nextEvent != "" {
+		res.Send(nextEvent)
+	}
+
 	return nil
 })
 

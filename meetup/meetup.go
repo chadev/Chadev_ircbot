@@ -2,11 +2,14 @@ package meetup
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
 	"io/ioutil"
 	"net/http"
 	"os"
 	"time"
+
+	"github.com/danryan/hal"
 )
 
 const baseURL = "https://api.meetup.com/2/events?&sign=true&photo-host=secure&group_urlname=%s&page=20&key=%s"
@@ -14,6 +17,7 @@ const baseURL = "https://api.meetup.com/2/events?&sign=true&photo-host=secure&gr
 // Meetup contains the ruturn value from the Meetup API.
 type Meetup struct {
 	Results []MeetupEvents `json:"results"`
+	Meta    MeetupMeta     `json:"meta"`
 }
 
 // MeetupEvents contains details for each event in the return value.
@@ -27,6 +31,11 @@ type MeetupEvents struct {
 // MeetupVenue contains details about the venue for each event.
 type MeetupVenue struct {
 	Name string `json:"name"`
+}
+
+// MeetupMeta cotains additional data returned by the Meetup API
+type MeetupMeta struct {
+	TotalCount int `json:"total_count"`
 }
 
 func (e *MeetupEvents) parseDateTime() time.Time {
@@ -68,6 +77,7 @@ func isToday(dt time.Time) bool {
 }
 
 func (m *Meetup) string() string {
+	hal.Logger.Debugf("%#v", m)
 	dt := m.Results[0].parseDateTime()
 	fTime := formatDateTime(dt)
 	lunchDay := isToday(dt)
@@ -96,6 +106,10 @@ func GetNextMeetup(group string) (string, error) {
 	}
 	defer resp.Body.Close()
 
+	if resp.StatusCode != 200 {
+		return "", errors.New("Failed to fetch details from Meetup API")
+	}
+
 	body, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
 		return "", err
@@ -105,6 +119,10 @@ func GetNextMeetup(group string) (string, error) {
 	err = json.Unmarshal(body, &Events)
 	if err != nil {
 		return "", err
+	}
+
+	if Events.Meta.TotalCount == 0 {
+		return "", nil
 	}
 
 	return Events.string(), nil
