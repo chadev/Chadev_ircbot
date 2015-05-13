@@ -22,7 +22,7 @@ type DevTalk struct {
 var lunchHandler = hear(`is today (devlunch|dev lunch) day\b`, "is today devlunch day", "Tells if today is lunch day, and what the talk is", func(res *hal.Response) error {
 	d := time.Now().Weekday().String()
 	if d != "Thursday" {
-		msg, err := meetup.GetTalkDetails(false)
+		msg, err := meetup.GetNextMeetup("chadevs")
 		if err != nil {
 			hal.Logger.Error(err)
 			return res.Send("Sorry I was unable to get details on the next dev lunch.  Please check https://meetup.com/chadevs")
@@ -31,7 +31,7 @@ var lunchHandler = hear(`is today (devlunch|dev lunch) day\b`, "is today devlunc
 		return res.Send(fmt.Sprintf("No, sorry!  %s", msg))
 	}
 
-	msg, err := meetup.GetTalkDetails(true)
+	msg, err := meetup.GetNextMeetup("chadevs")
 	if err != nil {
 		hal.Logger.Error(err)
 		return res.Send("Sorry I was unable to get details on the next dev lunch.  Please check https://meetup.com/chadevs")
@@ -41,7 +41,7 @@ var lunchHandler = hear(`is today (devlunch|dev lunch) day\b`, "is today devlunc
 })
 
 var talkHandler = hear(`devlunch me`, "devlunch me", "Returns details on the next Chadev Lunch Talk", func(res *hal.Response) error {
-	msg, err := meetup.GetTalkDetails(false)
+	msg, err := meetup.GetNextMeetup("chadevs")
 	if err != nil {
 		hal.Logger.Error(err)
 		return res.Send("Sorry I was unable to get details on the next dev lunch.  Please check https://meetup.com/chadevs")
@@ -117,4 +117,21 @@ var devTalkLinkHandler = hear(`link to devlunch`, "link to devlunch", "Returns t
 	}
 
 	return res.Send(fmt.Sprintf("You can access the live stream for the talk here %s", talk.URL))
+})
+
+var devlunchRSVPHandler = hear(`devlunch rsvps`, "devlunch rnvps", "Gets the RSVP count for Chadev Dev Lunches", func(res *hal.Response) error {
+	rsvp, err := meetup.GetMeetupRSVP("chadevs")
+	if err != nil {
+		hal.Logger.Errorf("failed fetching RSVP information: %v", err)
+		res.Send("I was unable to fetch the latest RSVP information for this group")
+		return err
+	}
+
+	if rsvp != "" {
+		res.Send(fmt.Sprintf("Dev Lunch RSVP breakdown: %s", rsvp))
+	} else {
+		res.Send("There are either no upcoming dev lunches or no RSVP for the event yet")
+	}
+
+	return nil
 })

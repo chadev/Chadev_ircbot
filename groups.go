@@ -9,6 +9,7 @@ import (
 	"fmt"
 	"strings"
 
+	"github.com/chadev/Chadev_ircbot/meetup"
 	"github.com/danryan/hal"
 )
 
@@ -113,8 +114,57 @@ var groupDetailsHandler = hear(`(group|meetup) details (.+)`, "(group|meetup) de
 		return res.Send(fmt.Sprintf("I could not find a group with the name %s", name))
 	}
 
-	return res.Send(fmt.Sprintf("Group name: %s URL: %s", group.Name, group.URL))
+	nextEvent, err := meetup.GetNextMeetup(group.Meetup)
+	if err != nil {
+		hal.Logger.Errorf("failed fetching event from meetup.com: %v", err)
+	}
 
+	res.Send(fmt.Sprintf("Group name: %s URL: %s", group.Name, group.URL))
+	if nextEvent != "" {
+		res.Send(nextEvent)
+	}
+
+	return nil
+})
+
+var groupRSVPHandler = hear(`(group|meetup) rsvps (.+)`, "(group|meetup) rsvps [group name]", "Gets the RSVP count for the named group's next meeting", func(res *hal.Response) error {
+	name := res.Match[2]
+
+	var g []Groups
+	groups, _ := res.Robot.Store.Get("GROUPS")
+	if len(groups) > 0 {
+		err := json.Unmarshal(groups, &g)
+		if err != nil {
+			hal.Logger.Errorf("faild to parse json: %v", err)
+			return res.Send("Failed to parse groups list")
+		}
+	}
+
+	if len(groups) == 0 {
+		hal.Logger.Error("no groups currently defined")
+		return res.Send("I currently don't know of any groups, try adding some first")
+	}
+
+	group := searchGroups(g, strings.ToLower(name))
+	if group.Name == "" {
+		hal.Logger.Warnf("no group with the name %s found", name)
+		return res.Send(fmt.Sprintf("I could not find a group with the name %s", name))
+	}
+
+	rsvp, err := meetup.GetMeetupRSVP(group.Meetup)
+	if err != nil {
+		hal.Logger.Errorf("failed feching RSVP information: %v", err)
+		res.Send("I was unable to fetch the latest RSVP information for this group")
+		return err
+	}
+
+	if rsvp != "" {
+		res.Send(fmt.Sprintf("%s RSVP breakdown: %s", group.Name, rsvp))
+	} else {
+		res.Send("There are either no upcoming events or no RSVP for the event yet")
+	}
+
+	return err
 })
 
 var groupRemoveHandler = hear(`(group|meetup) remove (.+)`, "(group|meetup) remove [group name]", "Removes a group that ash knows about", func(res *hal.Response) error {
