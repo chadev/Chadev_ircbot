@@ -1,3 +1,7 @@
+// Copyright 2014-2015 Chadev. All rights reserved.
+// Use of this source code is governed by a BSD-style
+// license that can be found in the LICENSE file.
+
 package meetup
 
 import (
@@ -7,9 +11,8 @@ import (
 	"io/ioutil"
 	"net/http"
 	"os"
+	"strings"
 	"time"
-
-	"github.com/danryan/hal"
 )
 
 const baseURL = "https://api.meetup.com/2/events?&sign=true&photo-host=secure&group_urlname=%s&page=20&key=%s"
@@ -22,10 +25,14 @@ type Meetup struct {
 
 // MeetupEvents contains details for each event in the return value.
 type MeetupEvents struct {
-	Venue    MeetupVenue `json:"venue"`
-	EventURL string      `json:"event_url"`
-	Name     string      `json:"name"`
-	Time     int64       `json:"time"`
+	Venue     MeetupVenue `json:"venue"`
+	EventURL  string      `json:"event_url"`
+	Name      string      `json:"name"`
+	Time      int64       `json:"time"`
+	HeadCount int         `json:"headcount"`
+	YesRSVP   int         `json:"yes_rsvp_count"`
+	MaybeRSVP int         `json:"maybe_rsvp_count"`
+	RSVPLimit int         `json:"rsvp_limit"`
 }
 
 // MeetupVenue contains details about the venue for each event.
@@ -50,6 +57,28 @@ func (e *MeetupEvents) parseDateTime() time.Time {
 	t := time.Unix(0, e.Time*int64(time.Millisecond)).In(loc)
 
 	return t
+}
+
+func (e *MeetupEvents) parseRSVPs() string {
+	var output []string
+
+	if e.HeadCount > 0 {
+		output = append(output, fmt.Sprintf("Expected headcount: %d", e.HeadCount))
+	}
+
+	if e.YesRSVP > 0 {
+		output = append(output, fmt.Sprintf("Confirmed RSVPs: %d", e.YesRSVP))
+	}
+
+	if e.MaybeRSVP > 0 {
+		output = append(output, fmt.Sprintf("Maybes: %d", e.MaybeRSVP))
+	}
+
+	if e.RSVPLimit > 0 {
+		output = append(output, fmt.Sprintf("Note this event is capped at %d attendiees", e.RSVPLimit))
+	}
+
+	return strings.Join(output, ", ")
 }
 
 func formatDateTime(dt time.Time) string {
@@ -77,7 +106,6 @@ func isToday(dt time.Time) bool {
 }
 
 func (m *Meetup) string() string {
-	hal.Logger.Debugf("%#v", m)
 	dt := m.Results[0].parseDateTime()
 	fTime := formatDateTime(dt)
 	lunchDay := isToday(dt)
@@ -98,8 +126,7 @@ func (m *Meetup) string() string {
 }
 
 func GetNextMeetup(group string) (string, error) {
-	URL := fmt.Sprintf(baseURL, group,
-		os.Getenv("CHADEV_MEETUP"))
+	URL := fmt.Sprintf(baseURL, group, os.Getenv("CHADEV_MEETUP"))
 	resp, err := http.Get(URL)
 	if err != nil {
 		return "", err
@@ -126,4 +153,40 @@ func GetNextMeetup(group string) (string, error) {
 	}
 
 	return Events.string(), nil
+}
+
+func GetMeetupRSVP(group string) (string, error) {
+	Events, err := getMeetupResponce(group)
+	if err != nil {
+		return "", err
+	}
+
+	if Events.Meta.TotalCount == 0 {
+		return "", nil
+	}
+
+	return Events.Results[0].parseRSVPs(), nil
+}
+
+func getMeetupResponce(g string) (Meetup, error) {
+	var e Meetup
+	u := fmt.Sprintf(baseURL, g, os.Getenv("CHADEV_MEETUP"))
+	r, err := http.Get(u)
+	defer r.Body.Close()
+
+	if r.StatusCode != 200 {
+		return e, errors.New("failed to fetch details from Meetup API")
+	}
+
+	b, err := ioutil.ReadAll(r.Body)
+	if err != nil {
+		return e, err
+	}
+
+	err = json.Unmarshal(b, &e)
+	if err != nil {
+		return e, err
+	}
+
+	return e, nil
 }
