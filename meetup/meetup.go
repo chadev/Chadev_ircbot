@@ -63,15 +63,15 @@ func (e *MeetupEvents) parseRSVPs() string {
 	var output []string
 
 	if e.HeadCount > 0 {
-		output = append(output, fmt.Sprintf("Expected headcount: %d", e.HeadCount))
+		output = append(output, fmt.Sprintf("Expected headcount %d", e.HeadCount))
 	}
 
 	if e.YesRSVP > 0 {
-		output = append(output, fmt.Sprintf("Confirmed RSVPs: %d", e.YesRSVP))
+		output = append(output, fmt.Sprintf("Confirmed RSVPs %d", e.YesRSVP))
 	}
 
 	if e.MaybeRSVP > 0 {
-		output = append(output, fmt.Sprintf("Maybes: %d", e.MaybeRSVP))
+		output = append(output, fmt.Sprintf("Maybes %d", e.MaybeRSVP))
 	}
 
 	if e.RSVPLimit > 0 {
