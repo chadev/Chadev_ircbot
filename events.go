@@ -176,6 +176,7 @@ func getCalendarEvents() (string, error) {
 			return "", err
 		}
 	}
+	hal.Logger.Debugf("Access Token: %s", accessToken.Token)
 
 	URL := fmt.Sprintf("%s/4qc3thgj9ocunpfist563utr6g@group.calendar.google.com/events?access_token=%s&singleEvents=true&orderBy=startTime&timeMin=%s&maxResults=7",
 		baseURL, url.QueryEscape(accessToken.Token),
@@ -190,6 +191,7 @@ func getCalendarEvents() (string, error) {
 	if err != nil {
 		return "", err
 	}
+	hal.Logger.Debugf("Google calendal response: %v", string(body))
 
 	var Events Event
 
@@ -322,6 +324,7 @@ func getNextEvent() (string, error) {
 			return "", err
 		}
 	}
+	hal.Logger.Debugf("Access Token: %s", accessToken.Token)
 
 	URL := fmt.Sprintf("%s/4qc3thgj9ocunpfist563utr6g@group.calendar.google.com/events?access_token=%s&singleEvents=true&orderBy=startTime&timeMin=%s&maxResults=1",
 		baseURL, url.QueryEscape(accessToken.Token),
@@ -336,6 +339,7 @@ func getNextEvent() (string, error) {
 	if err != nil {
 		return "", err
 	}
+	hal.Logger.Debugf("Google calendal response: %v", string(body))
 
 	var E Event
 
