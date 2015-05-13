@@ -118,3 +118,20 @@ var devTalkLinkHandler = hear(`link to devlunch`, "link to devlunch", "Returns t
 
 	return res.Send(fmt.Sprintf("You can access the live stream for the talk here %s", talk.URL))
 })
+
+var devlunchRSVPHandler = hear(`devlunch rsvps`, "devlunch rnvps", "Gets the RSVP count for Chadev Dev Lunches", func(res *hal.Response) error {
+	rsvp, err := meetup.GetMeetupRSVP("chadevs")
+	if err != nil {
+		hal.Logger.Errorf("failed fetching RSVP information: %v", err)
+		res.Send("I was unable to fetch the latest RSVP information for this group")
+		return err
+	}
+
+	if rsvp != "" {
+		res.Send(fmt.Sprintf("Dev Lunch RSVP breakdown: %s", rsvp))
+	} else {
+		res.Send("There are either no upcoming dev lunches or no RSVP for the event yet")
+	}
+
+	return nil
+})

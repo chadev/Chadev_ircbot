@@ -125,6 +125,8 @@ func run() int {
 		groupAddHandler,
 		groupDetailsHandler,
 		groupRemoveHandler,
+		groupRSVPHandler,
+		devlunchRSVPHandler,
 	)
 
 	if err := robot.Run(); err != nil {

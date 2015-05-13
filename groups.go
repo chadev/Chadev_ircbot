@@ -127,7 +127,7 @@ var groupDetailsHandler = hear(`(group|meetup) details (.+)`, "(group|meetup) de
 	return nil
 })
 
-var groupRSVPCounts = hear(`(group|meetup) rsvps (.+)`, "(group|meetup) rsvps [group name]", "Gets the RSVP count for the named group's next meeting", func(res *hal.Response) error {
+var groupRSVPHandler = hear(`(group|meetup) rsvps (.+)`, "(group|meetup) rsvps [group name]", "Gets the RSVP count for the named group's next meeting", func(res *hal.Response) error {
 	name := res.Match[2]
 
 	var g []Groups
@@ -161,7 +161,7 @@ var groupRSVPCounts = hear(`(group|meetup) rsvps (.+)`, "(group|meetup) rsvps [g
 	if rsvp != "" {
 		res.Send(fmt.Sprintf("%s RSVP breakdown: %s", group.Name, rsvp))
 	} else {
-		res.Send(fmt.Sprintf("There are either no upcoming events or no RSVP for the event yet"))
+		res.Send("There are either no upcoming events or no RSVP for the event yet")
 	}
 
 	return err
