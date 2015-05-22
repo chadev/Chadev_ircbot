@@ -15,37 +15,52 @@ import (
 	"time"
 )
 
+// Base URL for the Meetup API
+// TODO shouldn't contain more than just the base path, the rest should be
+// built programatically to allow for calls other than just for events.
 const baseURL = "https://api.meetup.com/2/events?&sign=true&photo-host=secure&group_urlname=%s&page=20&key=%s"
 
 // Meetup contains the ruturn value from the Meetup API.
 type Meetup struct {
-	Results []MeetupEvents `json:"results"`
-	Meta    MeetupMeta     `json:"meta"`
+	// Results contains various data contained in the results object.
+	Results []Results `json:"results"`
+	// Meta contains various data contained in the metadata object.
+	Meta Meta `json:"meta"`
 }
 
-// MeetupEvents contains details for each event in the return value.
-type MeetupEvents struct {
-	Venue     MeetupVenue `json:"venue"`
-	EventURL  string      `json:"event_url"`
-	Name      string      `json:"name"`
-	Time      int64       `json:"time"`
-	HeadCount int         `json:"headcount"`
-	YesRSVP   int         `json:"yes_rsvp_count"`
-	MaybeRSVP int         `json:"maybe_rsvp_count"`
-	RSVPLimit int         `json:"rsvp_limit"`
+// Results contains details for each event in the return value.
+type Results struct {
+	// Venue contains various data about the event's venue
+	Venue Venue `json:"venue"`
+	// EventURL is the URL to the meetup page for the event
+	EventURL string `json:"event_url"`
+	// Name in the event name from Meetup
+	Name string `json:"name"`
+	// Time is the start time of the event in nanoseconds since Epoch
+	Time int64 `json:"time"`
+	// HeadCount is number of people attended
+	HeadCount int `json:"headcount"`
+	// YesRSVP is the number of people that responded yes to their rsvp
+	YesRSVP int `json:"yes_rsvp_count"`
+	// MaybeRSVP is the nubmer of people that responded maybe to their rsvp
+	MaybeRSVP int `json:"maybe_rsvp_count"`
+	// RSVPLimit is the maximum number of people that can attend this event
+	RSVPLimit int `json:"rsvp_limit"`
 }
 
-// MeetupVenue contains details about the venue for each event.
-type MeetupVenue struct {
+// Venue contains details about the venue for each event.
+type Venue struct {
+	// Name is the name of the location the event is being held in
 	Name string `json:"name"`
 }
 
-// MeetupMeta cotains additional data returned by the Meetup API
-type MeetupMeta struct {
+// Meta cotains additional data returned by the Meetup API
+type Meta struct {
+	// TotolCount is the number of events planned for a group
 	TotalCount int `json:"total_count"`
 }
 
-func (e *MeetupEvents) parseDateTime() time.Time {
+func (e *Results) parseDateTime() time.Time {
 	// set the timezone, otherwise UTC will be used
 	loc, err := time.LoadLocation("America/New_York")
 	if err != nil {
@@ -59,7 +74,7 @@ func (e *MeetupEvents) parseDateTime() time.Time {
 	return t
 }
 
-func (e *MeetupEvents) parseRSVPs() string {
+func (e *Results) parseRSVPs() string {
 	var output []string
 
 	if e.HeadCount > 0 {
@@ -125,25 +140,11 @@ func (m *Meetup) string() string {
 		m.Results[0].EventURL)
 }
 
+// GetNextMeetup returns details for a groups next event, group is the group
+// name as seen in the meetup URL.  Returns an empty string if the group has no
+// upcoming events.
 func GetNextMeetup(group string) (string, error) {
-	URL := fmt.Sprintf(baseURL, group, os.Getenv("CHADEV_MEETUP"))
-	resp, err := http.Get(URL)
-	if err != nil {
-		return "", err
-	}
-	defer resp.Body.Close()
-
-	if resp.StatusCode != 200 {
-		return "", errors.New("Failed to fetch details from Meetup API")
-	}
-
-	body, err := ioutil.ReadAll(resp.Body)
-	if err != nil {
-		return "", err
-	}
-
-	var Events Meetup
-	err = json.Unmarshal(body, &Events)
+	Events, err := getMeetupResponce(group)
 	if err != nil {
 		return "", err
 	}
@@ -155,6 +156,9 @@ func GetNextMeetup(group string) (string, error) {
 	return Events.string(), nil
 }
 
+// GetMeetupRSVP returns RSVP details for a groups next event, group is the group
+// name as seen in the meetup URL.  Returns an empty string if the group has no
+// upcoming events.
 func GetMeetupRSVP(group string) (string, error) {
 	Events, err := getMeetupResponce(group)
 	if err != nil {
