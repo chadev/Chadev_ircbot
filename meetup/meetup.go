@@ -10,15 +10,14 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net/http"
+	"net/url"
 	"os"
 	"strings"
 	"time"
 )
 
 // Base URL for the Meetup API
-// TODO shouldn't contain more than just the base path, the rest should be
-// built programatically to allow for calls other than just for events.
-const baseURL = "https://api.meetup.com/2/events?&sign=true&photo-host=secure&group_urlname=%s&page=20&key=%s"
+const baseURL = "https://api.meetup.com"
 
 // Meetup contains the ruturn value from the Meetup API.
 type Meetup struct {
@@ -144,7 +143,8 @@ func (m *Meetup) string() string {
 // name as seen in the meetup URL.  Returns an empty string if the group has no
 // upcoming events.
 func GetNextMeetup(group string) (string, error) {
-	Events, err := getMeetupResponce(group)
+	u := formatURL("events", group)
+	Events, err := getMeetupResponce(u)
 	if err != nil {
 		return "", err
 	}
@@ -160,7 +160,8 @@ func GetNextMeetup(group string) (string, error) {
 // name as seen in the meetup URL.  Returns an empty string if the group has no
 // upcoming events.
 func GetMeetupRSVP(group string) (string, error) {
-	Events, err := getMeetupResponce(group)
+	u := formatURL("rsvps", group)
+	Events, err := getMeetupResponce(u)
 	if err != nil {
 		return "", err
 	}
@@ -172,9 +173,8 @@ func GetMeetupRSVP(group string) (string, error) {
 	return Events.Results[0].parseRSVPs(), nil
 }
 
-func getMeetupResponce(g string) (Meetup, error) {
+func getMeetupResponce(u string) (Meetup, error) {
 	var e Meetup
-	u := fmt.Sprintf(baseURL, g, os.Getenv("CHADEV_MEETUP"))
 	r, err := http.Get(u)
 	defer r.Body.Close()
 
@@ -193,4 +193,24 @@ func getMeetupResponce(g string) (Meetup, error) {
 	}
 
 	return e, nil
+}
+
+func formatURL(m, g string) string {
+	u, err := url.ParseRequestURI(baseURL)
+	if err != nil {
+		u = &url.URL{Scheme: "https", Host: "api.meeetup.com"}
+	}
+
+	switch m {
+	case `events`, `rsvps`:
+		u.Path = "2/events"
+		v := url.Values{}
+		v.Set("sign", "true")
+		v.Add("photo-host", "secure")
+		v.Add("group_urlname", g)
+		v.Add("key", os.Getenv("CHADEV_MEETUP"))
+		u.RawQuery = v.Encode()
+	}
+
+	return u.String()
 }
