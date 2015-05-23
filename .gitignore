@@ -1,3 +1,4 @@
 chadev-ircbot
 *.swo
 Chadev_ircbot
+.env
