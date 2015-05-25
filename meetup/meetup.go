@@ -179,7 +179,8 @@ func getMeetupResponce(u string) (Meetup, error) {
 	defer r.Body.Close()
 
 	if r.StatusCode != 200 {
-		return e, errors.New("failed to fetch details from Meetup API")
+		return e, fmt.Errorf("error: meetup API Status code: %s using URL: %s\n", r.Status, u)
+
 	}
 
 	b, err := ioutil.ReadAll(r.Body)
