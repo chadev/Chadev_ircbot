@@ -122,9 +122,7 @@ func run() int {
 		devTalkLinkHandler,
 		isAliveHandler,
 		groupListHandler,
-		groupAddHandler,
 		groupDetailsHandler,
-		groupRemoveHandler,
 		groupRSVPHandler,
 		devlunchRSVPHandler,
 	)
