@@ -98,9 +98,7 @@ devlunch url (date) (url) | Set live stream url for the dev lunch talks
 link to devlunch | Returns the link to the dev lunch live stream
 is `username` alive | Returns status of user
 \[groups\|meetups\] list | Lists all groups that are known to Ash
-\[groups\|meetups\] add (group name): (url) | Adds a new group to Ash
 \[group\|meetup\] details | Returns details about a group
-\[group\|meetup\] remove (group name) | Removes a group that Ash knows about
 
 ## Contributing
 
