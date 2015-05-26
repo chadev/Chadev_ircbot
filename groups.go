@@ -127,7 +127,6 @@ var groupRSVPHandler = hear(`(group|meetup) rsvps (.+)`, "(group|meetup) rsvps [
 
 	group := searchGroups(g, name)
 	for _, u := range group.Urls {
-		hal.Logger.Infof("values of u: %v", u)
 		if u.Name == "website" || u.Name == "meetup" {
 			m := parseMeetupName(u.URL)
 			if m != "" {
@@ -159,6 +158,7 @@ var groupRSVPHandler = hear(`(group|meetup) rsvps (.+)`, "(group|meetup) rsvps [
 
 func parseMeetupName(u string) string {
 	// meetup URLs are structured as www.meetup.com/(group name)
+	u = strings.TrimSuffix(u, "/") // trim trailing slash if present
 	parts := strings.Split(u, "/")
 
 	return parts[len(parts)-1]
