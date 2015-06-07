@@ -80,7 +80,7 @@ func (e *Results) parseRSVPs() string {
 	}
 
 	if e.YesRSVP > 0 {
-		output = append(output, fmt.Sprintf("Confirmed RSVPs %d", e.YesRSVP))
+		output = append(output, fmt.Sprintf("Confirmed %d RSVPs", e.YesRSVP))
 	}
 
 	if e.MaybeRSVP > 0 {
