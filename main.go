@@ -125,6 +125,8 @@ func run() int {
 		groupDetailsHandler,
 		groupRSVPHandler,
 		devlunchRSVPHandler,
+		karmaHandler,
+		karmaStatsHandler,
 	)
 
 	if err := robot.Run(); err != nil {
