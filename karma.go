@@ -13,7 +13,7 @@ import (
 )
 
 type DevKarma struct {
-	Name  string `json:"nick"`
+	Name  string `json:"name"`
 	Karma int    `json:"karma"`
 }
 
