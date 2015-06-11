@@ -42,8 +42,7 @@ var selfHandler = hear(`who are you`, "self", "", func(res *hal.Response) error 
 })
 
 var quitHandler = hear(`(.*)+/quit(.*)+`, "quit", "", func(res *hal.Response) error {
-	name := res.UserName()
-	return res.Send(fmt.Sprintf("No!  Bad %s!", name))
+	return res.Send(fmt.Sprintf("No!  Bad %s!", res.UserName()))
 })
 
 var helpHandler = hear(`help`, "help", "Displays this message", func(res *hal.Response) error {
@@ -127,6 +126,7 @@ func run() int {
 		devlunchRSVPHandler,
 		karmaHandler,
 		karmaStatsHandler,
+		karmaRankingHandler,
 	)
 
 	if err := robot.Run(); err != nil {
