@@ -12,7 +12,13 @@ import (
 
 var isAliveHandler = hear(`is ([A-Za-z0-9\-_\{\}\[\]\\\s]+) alive`, "is (name) alive", "Find out if a user is alive", func(res *hal.Response) error {
 	name := res.Match[1]
-	res.Send(fmt.Sprintf("I can't find %s's heartbeat..", name))
-	res.Send("But let's not jump to conclusions")
+	_, err := res.Robot.Users.Get(name)
+	if err != nil {
+		res.Send(fmt.Sprintf("I can't find %s's heartbeat..", name))
+		res.Send("But let's not jump to conclusions")
+	} else {
+		res.Reply(fmt.Sprintf("I found %s's heartbeat, all is good", name))
+	}
+
 	return nil
 })
