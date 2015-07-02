@@ -99,6 +99,8 @@ link to devlunch | Returns the link to the dev lunch live stream
 is `username` alive | Returns status of user
 \[groups\|meetups\] list | Lists all groups that are known to Ash
 \[group\|meetup\] details | Returns details about a group
+`name`\[++|--\] | Adjusts the karma for a user or thing by one point
+karma stats `name` | Displays the current karma for the user or thing
 mods | Returns a list of channel mods currently online
 
 ## Contributing
