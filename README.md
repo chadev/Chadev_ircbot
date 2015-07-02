@@ -99,6 +99,7 @@ link to devlunch | Returns the link to the dev lunch live stream
 is `username` alive | Returns status of user
 \[groups\|meetups\] list | Lists all groups that are known to Ash
 \[group\|meetup\] details | Returns details about a group
+mods | Returns a list of channel mods currently online
 
 ## Contributing
 
