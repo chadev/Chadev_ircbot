@@ -7,39 +7,66 @@ package main
 import (
 	"encoding/json"
 	"fmt"
+	"io/ioutil"
+	"net/http"
 	"strings"
 
 	"github.com/chadev/Chadev_ircbot/meetup"
 	"github.com/danryan/hal"
+	"github.com/texttheater/golang-levenshtein/levenshtein"
 )
 
 // Groups contains data on the various dev groups.
 type Groups struct {
-	// Name of the group
+	Group []Group `json:"groups"`
+}
+
+// Group contains data from the "groups" array in the JSON object.
+type Group struct {
+	Name          string `json:"name"`
+	GitHub        string `json:"github"`
+	CodeofConduct string `json:"code-of-conduct"`
+	Urls          []URLs `json:"urls"`
+	meetup        string
+}
+
+// URLs contains the name and url to the group website
+type URLs struct {
 	Name string `json:"name"`
-	// URL for the group page/meetup page
-	URL string `json:"url"`
-	// Meetup is the group name from the meetup URL
-	// this is used for Meetup API calls.
-	Meetup string `json:"meetup_name"`
+	URL  string `json:"url"`
+}
+
+func parseGroups() (Groups, error) {
+	var g Groups
+	r, err := http.Get("http://chadev.com/groups.json")
+	if err != nil {
+		return g, err
+	}
+	defer r.Body.Close()
+
+	b, err := ioutil.ReadAll(r.Body)
+	if err != nil {
+		return g, err
+	}
+
+	err = json.Unmarshal(b, &g)
+	if err != nil {
+		return Groups{}, err
+	}
+
+	return g, nil
 }
 
 var groupListHandler = hear(`(groups|meetups) list`, "(groups|meetups) list", "Lists all groups that are known to Ash", func(res *hal.Response) error {
-	groups, err := res.Robot.Store.Get("GROUPS")
+	g, err := parseGroups()
 	if err != nil {
-		res.Send("I am currently unaware of any groups, try adding some")
+		hal.Logger.Errorf("failed parsing group list: %v", err)
+		res.Send("Sorry, I encountered an error while parsing the groups list")
 		return err
 	}
 
-	var g []Groups
-	err = json.Unmarshal(groups, &g)
-	if err != nil {
-		hal.Logger.Errorf("error parsing JSON: %v", err)
-		return res.Send("I had an error parsing the groups")
-	}
-
 	var gn []string
-	for _, val := range g {
+	for _, val := range g.Group {
 		gn = append(gn, val.Name)
 	}
 	names := strings.Join(gn, ", ")
@@ -47,79 +74,40 @@ var groupListHandler = hear(`(groups|meetups) list`, "(groups|meetups) list", "L
 	return res.Send(fmt.Sprintf("Here is a list of groups: %s", names))
 })
 
-var groupAddHandler = hear(`(groups|meetups) add (.+): (.+)`, "(groups|meetups) add [group name]: [group url]", "Adds a new group to Ash", func(res *hal.Response) error {
-	name := res.Match[2]
-	url := res.Match[3]
-
-	if name == "" {
-		hal.Logger.Warn("no group name given")
-		return res.Send("I need a name for the group to add it.")
-	}
-	if url == "" {
-		hal.Logger.Warn("no group url given")
-		return res.Send("I need the url for the groups webpage or meetup group")
-	}
-
-	var g []Groups
-	groups, err := res.Robot.Store.Get("GROUPS")
-	if len(groups) > 0 {
-		err := json.Unmarshal(groups, &g)
-		if err != nil {
-			hal.Logger.Errorf("faild to parse json: %v", err)
-			return res.Send("Failed to parse groups list")
-		}
-	}
-
-	var meetupName string
-	if strings.Contains(url, "meetup.com") {
-		meetupName = parseMeetupName(url)
-	}
-
-	g = append(g, Groups{Name: name, URL: url, Meetup: meetupName})
-	groups, err = json.Marshal(g)
-	if err != nil {
-		hal.Logger.Errorf("faild to build json: %v", err)
-		return res.Send("Failed write updated groups list")
-	}
-	err = res.Robot.Store.Set("GROUPS", groups)
-	if err != nil {
-		hal.Logger.Error(err)
-		return res.Send("Failed writing to the datastore")
-	}
-
-	return res.Send("Added new group")
-})
-
 var groupDetailsHandler = hear(`(group|meetup) details (.+)`, "(group|meetup) details [group name]", "Returns details about a group", func(res *hal.Response) error {
 	name := res.Match[2]
 
-	var g []Groups
-	groups, _ := res.Robot.Store.Get("GROUPS")
-	if len(groups) > 0 {
-		err := json.Unmarshal(groups, &g)
-		if err != nil {
-			hal.Logger.Errorf("faild to parse json: %v", err)
-			return res.Send("Failed to parse groups list")
+	g, err := parseGroups()
+	if err != nil {
+		hal.Logger.Errorf("failed parsing group list: %v", err)
+		res.Send("Sorry, I encountered an error while parsing the groups list")
+		return err
+	}
+
+	group := searchGroups(g, name)
+	for _, u := range group.Urls {
+		if u.Name == "website" || u.Name == "meetup" {
+			m := parseMeetupName(u.URL)
+			if m != "" {
+				group.meetup = m
+			}
 		}
 	}
 
-	if len(groups) == 0 {
-		hal.Logger.Error("no groups currently defined")
-		return res.Send("I currently don't know of any groups, try adding some first")
+	var nextEvent string
+	if group.meetup != "" {
+		nextEvent, err = meetup.GetNextMeetup(group.meetup)
+		if err != nil {
+			hal.Logger.Errorf("failed fetching event from meetup.com: %v", err)
+		}
 	}
 
-	group := searchGroups(g, strings.ToLower(name))
-	if group.Name == "" {
-		hal.Logger.Warnf("no group with the name %s found", name)
-		return res.Send(fmt.Sprintf("I could not find a group with the name %s", name))
+	var urls []string
+	for _, u := range group.Urls {
+		urls = append(urls, u.URL)
 	}
-
-	nextEvent, err := meetup.GetNextMeetup(group.Meetup)
-	if err != nil {
-		hal.Logger.Errorf("failed fetching event from meetup.com: %v", err)
-	}
-
-	res.Send(fmt.Sprintf("Group name: %s URL: %s", group.Name, group.URL))
+	ul := strings.Join(urls, ", ")
+	res.Send(fmt.Sprintf("Group name: %s URL: %s", group.Name, ul))
 	if nextEvent != "" {
 		res.Send(nextEvent)
 	}
@@ -130,31 +118,32 @@ var groupDetailsHandler = hear(`(group|meetup) details (.+)`, "(group|meetup) de
 var groupRSVPHandler = hear(`(group|meetup) rsvps (.+)`, "(group|meetup) rsvps [group name]", "Gets the RSVP count for the named group's next meeting", func(res *hal.Response) error {
 	name := res.Match[2]
 
-	var g []Groups
-	groups, _ := res.Robot.Store.Get("GROUPS")
-	if len(groups) > 0 {
-		err := json.Unmarshal(groups, &g)
-		if err != nil {
-			hal.Logger.Errorf("faild to parse json: %v", err)
-			return res.Send("Failed to parse groups list")
+	g, err := parseGroups()
+	if err != nil {
+		hal.Logger.Errorf("failed parsing group list: %v", err)
+		res.Send("Sorry, I encountered an error while parsing the groups list")
+		return err
+	}
+
+	group := searchGroups(g, name)
+	for _, u := range group.Urls {
+		if u.Name == "website" || u.Name == "meetup" {
+			m := parseMeetupName(u.URL)
+			if m != "" {
+				group.meetup = m
+			}
 		}
 	}
 
-	if len(groups) == 0 {
-		hal.Logger.Error("no groups currently defined")
-		return res.Send("I currently don't know of any groups, try adding some first")
+	if group.meetup == "" {
+		res.Send(fmt.Sprintf("%s is using an unsupported event system, can't fetch RSVP information", group.Name))
+		return nil
 	}
 
-	group := searchGroups(g, strings.ToLower(name))
-	if group.Name == "" {
-		hal.Logger.Warnf("no group with the name %s found", name)
-		return res.Send(fmt.Sprintf("I could not find a group with the name %s", name))
-	}
-
-	rsvp, err := meetup.GetMeetupRSVP(group.Meetup)
+	rsvp, err := meetup.GetMeetupRSVP(group.meetup)
 	if err != nil {
-		hal.Logger.Errorf("failed feching RSVP information: %v", err)
-		res.Send("I was unable to fetch the latest RSVP information for this group")
+		hal.Logger.Errorf("failed fetching RSVP information: %v", err)
+		res.Send("I was unable to fetch the latest RSVP informaion for this group")
 		return err
 	}
 
@@ -164,64 +153,34 @@ var groupRSVPHandler = hear(`(group|meetup) rsvps (.+)`, "(group|meetup) rsvps [
 		res.Send("There are either no upcoming events or no RSVP for the event yet")
 	}
 
-	return err
-})
-
-var groupRemoveHandler = hear(`(group|meetup) remove (.+)`, "(group|meetup) remove [group name]", "Removes a group that ash knows about", func(res *hal.Response) error {
-	name := res.Match[2]
-
-	var g []Groups
-	groups, err := res.Robot.Store.Get("GROUPS")
-	if err != nil {
-		hal.Logger.Error("no groups currently in the datastore")
-		res.Send("Sorry I don't know of any groups.")
-		return err
-	}
-
-	err = json.Unmarshal(groups, &g)
-	if err != nil {
-		hal.Logger.Errorf("couldn't unmarshal json: %v", err)
-		res.Send("Sorry I was unable to parse the json object")
-		return err
-	}
-
-	for i, group := range g {
-		if group.Name == name {
-			// remove the group from the slice
-			var e Groups
-			g[len(g)-1], g = e, append(g[:i], g[i+1:]...)
-		}
-	}
-	groups, err = json.Marshal(g)
-	if err != nil {
-		hal.Logger.Errorf("couldn't marshal json: %v", err)
-		res.Send("Sorry I was unable to generate json object")
-		return err
-	}
-	err = res.Robot.Store.Set("GROUPS", groups)
-	if err != nil {
-		hal.Logger.Errorf("error writing to datastore: %v", err)
-		res.Send("Sorry I was unable to update group listing")
-		return err
-	}
-
-	return res.Send("Group list updated")
+	return nil
 })
 
 func parseMeetupName(u string) string {
 	// meetup URLs are structured as www.meetup.com/(group name)
+	u = strings.TrimSuffix(u, "/") // trim trailing slash if present
 	parts := strings.Split(u, "/")
 
 	return parts[len(parts)-1]
 }
 
-func searchGroups(g []Groups, n string) Groups {
-	var group Groups
-	for _, val := range g {
-		if strings.ToLower(val.Name) == n {
-			group = val
+func searchGroups(g Groups, n string) Group {
+	distance := int(^uint(0) >> 1) // nitialize to "infinity"
+	var idx int
+	n = strings.ToUpper(strings.TrimSpace(n))
+
+	for i := 0; i < len(g.Group); i++ {
+		cleanGroup := strings.ToUpper(strings.TrimSpace(g.Group[i].Name))
+		if n == cleanGroup {
+			return g.Group[i]
+		}
+
+		newdistance := levenshtein.DistanceForStrings([]rune(n), []rune(cleanGroup), levenshtein.DefaultOptions)
+		if newdistance < distance {
+			distance = newdistance
+			idx = i
 		}
 	}
 
-	return group
+	return g.Group[idx]
 }

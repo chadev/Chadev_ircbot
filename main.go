@@ -7,6 +7,7 @@ package main
 import (
 	"fmt"
 	"os"
+	"strings"
 
 	"github.com/danryan/hal"
 	_ "github.com/danryan/hal/adapter/irc"
@@ -16,7 +17,7 @@ import (
 )
 
 // VERSION contians the current verison number and revison if need be
-const VERSION = "2015-05-13"
+var VERSION string
 
 // handler is an interface for objects to implement in order to respond to messages.
 type handler interface {
@@ -42,8 +43,7 @@ var selfHandler = hear(`who are you`, "self", "", func(res *hal.Response) error 
 })
 
 var quitHandler = hear(`(.*)+/quit(.*)+`, "quit", "", func(res *hal.Response) error {
-	name := res.UserName()
-	return res.Send(fmt.Sprintf("No!  Bad %s!", name))
+	return res.Send(fmt.Sprintf("No!  Bad %s!", res.UserName()))
 })
 
 var helpHandler = hear(`help`, "help", "Displays this message", func(res *hal.Response) error {
@@ -67,6 +67,19 @@ var helpHandler = hear(`help`, "help", "Displays this message", func(res *hal.Re
 	res.Send(fmt.Sprintf("My usage information can be found at %s", text))
 
 	return nil
+})
+
+var modHandler = hear(`mods`, "mods", "Returns a list of channel moderators", func(res *hal.Response) error {
+	admin := res.Robot.Auth.Admins()
+	hal.Logger.Debugf("admins: %#v", admin)
+
+	var ops []string
+	for _, a := range admin {
+		ops = append(ops, a.Name)
+	}
+	msg := strings.Join(ops, ", ")
+	err := res.Reply("Current mods are: " + msg)
+	return err
 })
 
 func hear(pattern string, command string, message string, fn func(res *hal.Response) error) handler {
@@ -122,11 +135,13 @@ func run() int {
 		devTalkLinkHandler,
 		isAliveHandler,
 		groupListHandler,
-		groupAddHandler,
 		groupDetailsHandler,
-		groupRemoveHandler,
 		groupRSVPHandler,
 		devlunchRSVPHandler,
+		karmaHandler,
+		karmaStatsHandler,
+		karmaRankingHandler,
+		modHandler,
 	)
 
 	if err := robot.Run(); err != nil {
